@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
-import { nanoid } from 'nanoid'
 import {
-  alphabetLowerCaseLetters,
+  nanoid,
   alphabetNumber,
+  alphabetLowerCaseLetters,
 } from '../config/nanoid.config.js'
 
 const UserModel = new mongoose.Schema(
@@ -36,4 +36,4 @@ const UserModel = new mongoose.Schema(
   }
 )
 
-export default mongoose.model(UserModel, 'user')
+export default mongoose.model('user', UserModel)

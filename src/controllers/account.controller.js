@@ -1,9 +1,9 @@
 import createHttpError from 'http-errors'
-import { StatusCodes } from 'http-status-codes/build/cjs/status-codes.js'
+import { StatusCodes } from 'http-status-codes'
 
 import UserModel from '../models/user.models.js'
 
-import { ROLES } from '../constants/RBACK.constant'
+import { ROLES } from '../constants/RBACK.constant.js'
 import { getOtpSchema } from '../validations/user.validation.js'
 import { generateRandomNumber } from '../utils/generate-number.util.js'
 
@@ -33,7 +33,7 @@ const saveUser = async (mobile, code) => {
     code,
     expiresIn: new Date().getTime() + 120000,
   }
-  const existUserResult = checkExistUser(mobile)
+  const existUserResult = await checkExistUser(mobile)
   if (existUserResult) return await updateUser(mobile, { otp })
 
   return !!(await UserModel.create({
