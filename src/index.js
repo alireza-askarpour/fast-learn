@@ -3,10 +3,10 @@ import express from 'express'
 import createHttpError from 'http-errors'
 
 import { appListener, appErrorHandler, port } from './config/app.config.js'
-import connectDB from './config/database.js'
-import allRoutes from './routes/index.js'
+import connectDB from './config/database.config.js'
+import allRoutes from './routes/index.routes.js'
 
-import { morganMiddleware } from './middlewares/morgan.middlewares.js'
+import { morganMiddleware } from './middlewares/morgan.middleware.js'
 
 // Config
 dotenv.config()

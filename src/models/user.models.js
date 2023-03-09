@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid'
 import {
   alphabetLowerCaseLetters,
   alphabetNumber,
-} from '../config/nanoid.config'
+} from '../config/nanoid.config.js'
 
 const UserModel = new mongoose.Schema(
   {

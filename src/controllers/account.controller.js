@@ -1,10 +1,11 @@
 import createHttpError from 'http-errors'
+import { StatusCodes } from 'http-status-codes/build/cjs/status-codes.js'
 
 import UserModel from '../models/user.models.js'
-import { ROLES } from '../constants/RBACK.js'
-import { generateRandomNumber } from '../utils/generate-number.util.js'
+
+import { ROLES } from '../constants/RBACK.constant'
 import { getOtpSchema } from '../validations/user.validation.js'
-import { StatusCodes } from 'http-status-codes/build/cjs/status-codes.js'
+import { generateRandomNumber } from '../utils/generate-number.util.js'
 
 export const getOtp = async (req, res, next) => {
   const { mobile } = req.body
