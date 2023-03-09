@@ -13,8 +13,9 @@ const UserModel = new mongoose.Schema(
       type: String,
       lowercase: true,
       default: nanoid(alphabetNumber + alphabetLowerCaseLetters, 10),
+      unique: true,
     },
-    mobile: { type: String, required: true },
+    mobile: { type: String, required: true, unique: true },
     otp: {
       type: Object,
       default: {
