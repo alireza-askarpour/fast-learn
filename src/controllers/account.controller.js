@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 import UserModel from '../models/user.models.js'
 
 import { checkOtpSchema, getOtpSchema } from '../validations/user.validation.js'
-import { signAccessToken, signRefreshToken } from '../utils/token-utils.js'
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token-utils.js'
 import { generateRandomNumber } from '../utils/generate-number.util.js'
 import { ROLES } from '../constants/RBACK.constant.js'
 
@@ -65,9 +65,8 @@ export const checkOtp = async (req, res, next) => {
     const user = await UserModel.findOne({ mobile })
     if (!user) throw createHttpError.NotFound('Not found user')
 
-    console.log(user.otp.code, code)
-    if (user.otp.code != code) throw createHttpError.Unauthorized('The code sent is not correct')
     const now = Date.now()
+    if (user.otp.code != code) throw createHttpError.Unauthorized('The code sent is not correct')
     if (+user.otp.expiresIn < now) throw createHttpError.Unauthorized('Your code has expired')
 
     const accessToken = await signAccessToken(user._id)
@@ -77,6 +76,25 @@ export const checkOtp = async (req, res, next) => {
       status: StatusCodes.CREATED,
       accessToken,
       refreshToken,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const refreshToken = async (req, res, next) => {
+  const { refreshToken } = req.body
+  try {
+    const mobile = await verifyRefreshToken(refreshToken)
+    const user = await UserModel.findOne({ mobile })
+
+    const accessToken = await signAccessToken(user._id)
+    const newRefreshToken = await signRefreshToken(user._id)
+
+    return res.status(StatusCodes.CREATED).json({
+      status: StatusCodes.CREATED,
+      accessToken,
+      refreshToken: newRefreshToken,
     })
   } catch (err) {
     next(err)

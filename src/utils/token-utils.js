@@ -41,10 +41,10 @@ export const signRefreshToken = userId => {
 export const verifyRefreshToken = token => {
   return new Promise((resolve, reject) => {
     JWT.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY, async (err, payload) => {
-      if (err) reject(createError.Unauthorized('Login to your account'))
+      if (err) reject(createHttpError.Unauthorized('Login to your account'))
 
       const user = await UserModels.findOne({ mobile: payload.mobile }, { password: 0, otp: 0 })
-      if (!user) reject(createError.Unauthorized('Login to your account'))
+      if (!user) reject(createHttpError.Unauthorized('Login to your account'))
 
       resolve(payload.mobile)
     })
