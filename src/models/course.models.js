@@ -1,6 +1,23 @@
 import mongoose from 'mongoose'
 import { CommentSchema } from './public.schema'
 
+const EpisodeMoedls = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    text: { type: String, required: true },
+    type: { type: String, default: 'unlock' },
+    time: { type: String, required: true },
+    videoAddress: { type: String, required: true },
+  },
+  { toJSON: { virtuals: true } }
+)
+
+const ChapterMoedls = new mongoose.Schema({
+  title: { type: String, required: true },
+  text: { type: String, default: '' },
+  episodes: { type: [EpisodeMoedls], default: [] },
+})
+
 const CourseMoedls = new mongoose.Schema(
   {
     title: { type: String, required: true },
@@ -18,8 +35,8 @@ const CourseMoedls = new mongoose.Schema(
     like: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
     deslike: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
     bookmark: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
-   chapters : {type: [Chapter], default: []},
-},
+    chapters: { type: [ChapterMoedls], default: [] },
+  },
   {
     timestamps: true,
     versionKey: false,
