@@ -59,8 +59,10 @@
  *          responses:
  *             201:
  *                description: Category created successfully
- *             401:
+ *             400:
  *                description: Bad request
+ *             401:
+ *                description: Unauthorization
  *             500:
  *                description: Internal server error
  *

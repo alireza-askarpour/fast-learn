@@ -4,7 +4,7 @@ import UserModels from '../models/user.models.js'
 
 export const verifyAccessToken = (req, res, next) => {
   try {
-    const [bearer, token] = req.headers?.authorizarion
+    const [bearer, token] = req.headers?.authorization?.split(' ')
     const validData = ['Bearer', 'bearer']
 
     if (!token || !validData.includes(bearer)) {
