@@ -1,22 +1,33 @@
 import fs from 'fs'
-
 import path from 'path'
+
 import multer from 'multer'
+import createHttpError from 'http-errors'
 
 import { nanoid, alphabetLowerCaseLetters } from '../config/nanoid.config.js'
 
 const thumbnailStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const directory = './uploads/thumbnail'
-    req.body.fileUploadPath = path.join('uploads', 'thumbnail')
     fs.mkdirSync(directory, { recursive: true })
     return cb(null, directory)
-  },  
+  },
   filename: (req, file, cb) => {
-    const fileName = nanoid(alphabetLowerCaseLetters, 16) 
-    req.body.filename = fileName
-    cb(null, fileName + path.extname(file.originalname))
+    cb(null, nanoid(alphabetLowerCaseLetters, 16) + path.extname(file.originalname))
   },
 })
 
-export const uploadCourseThumbnail = multer({ storage: thumbnailStorage })
+const fileFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname)
+  const mimetypes = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
+  if (mimetypes.includes(ext)) return cb(null, true)
+  return cb(createHttpError.BadRequest('The submitted image format is not correct'))
+}
+
+const pictureMaxSize = 1 * 1000 * 1000 // 1MB
+
+export const uploadCourseThumbnail = multer({
+  storage: thumbnailStorage,
+  fileFilter,
+  limits: { fileSize: pictureMaxSize },
+})
