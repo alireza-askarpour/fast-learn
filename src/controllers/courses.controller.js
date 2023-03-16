@@ -23,8 +23,8 @@ export const createCourse = async (req, res, next) => {
       status: 'soon',
       time: '00:00:00',
     }
-console.log(course);
-    const newCourse = await CourseModel.create({ course })
+
+    const newCourse = await CourseModel.create(course)
     if (!newCourse) throw createHttpError.InternalServerError('The course was not registered')
 
     res.status(StatusCodes.CREATED).json({

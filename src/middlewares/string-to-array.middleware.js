@@ -1,6 +1,5 @@
 export const stringToArray = (...args) => {
   return (req, res, next) => {
-  console.log("args in stringToArray middlaware: ", args);
   const fields = args
     fields.forEach(field => {
       if (req.body[field]) {
