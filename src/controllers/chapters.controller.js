@@ -34,7 +34,7 @@ export const createChapter = async (req, res, next) => {
   }
 }
 
-export const getChapter = async (req, res, next) => {
+export const getChapters = async (req, res, next) => {
   const { courseId } = req.params
   try {
     const { id } = await ObjectIdValidator.validateAsync({ id: courseId })

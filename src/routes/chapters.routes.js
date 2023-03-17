@@ -1,10 +1,10 @@
 import express from 'express'
 
-import { getChapter, createChapter, updateChapter } from '../controllers/chapters.controller.js'
+import { getChapters, createChapter, updateChapter } from '../controllers/chapters.controller.js'
 
 const router = express.Router()
 
-router.get('/:courseId', getChapter)
+router.get('/:courseId', getChapters)
 router.patch('/create', createChapter)
 router.patch('/update/:chapterId', updateChapter)
 
