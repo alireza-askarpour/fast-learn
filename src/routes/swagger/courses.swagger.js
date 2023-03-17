@@ -124,6 +124,19 @@
 
 /**
  * @swagger
+ *    /courses/list:
+ *       get:
+ *          tags: [Courses(Admin-Panel)]
+ *          summary: get all courses
+ *          responses:
+ *             200:
+ *                description: successfully
+ *             500:
+ *                description: Internal server error
+ */
+
+/**
+ * @swagger
  * /courses/create:
  *    post:
  *       tags: [Courses(Admin-Panel)]

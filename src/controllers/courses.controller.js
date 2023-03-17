@@ -6,6 +6,21 @@ import { deleteFile } from '../utils/file-system.utils.js'
 import { createCourseSchema, updateCourseSchema } from '../validations/course.validation.js'
 import { ObjectIdValidator } from '../validations/public.validation.js'
 
+export const getCourses = async (req, res, next) => {
+  try {
+    const courses = await CourseModel.find()
+    if (!courses) throw createHttpError.InternalServerError('The list of courses was not received')
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      courses,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const createCourse = async (req, res, next) => {
   try {
     const courseDataBody = await createCourseSchema.validateAsync(req.body)
