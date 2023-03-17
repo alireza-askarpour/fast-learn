@@ -105,3 +105,25 @@
  *             500:
  *                description: Internal server error
  */
+
+/**
+ * @swagger
+ *    /chapters/remove/{chapterId}:
+ *       patch:
+ *          tags: [Chapters(Admin-Panel)]
+ *          summary: remove chapter by chapter ID
+ *          parameters:
+ *             -  in: path
+ *                name: chapterId
+ *                type: string
+ *                required: true
+ *          responses:
+ *             200:
+ *                description: success
+ *             400:
+ *                description: Bad request
+ *             401:
+ *                description: Unauthorization
+ *             500:
+ *                description: Internal server error
+ */

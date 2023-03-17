@@ -79,3 +79,40 @@ export const updateChapter = async (req, res, next) => {
     next(err)
   }
 }
+
+export const removeChapter = async (req, res, next) => {
+  const { chapterId } = req.params
+  try {
+    await getOneChapter(chapterId)
+
+    const removeChapterResult = await CourseModel.updateOne(
+      { 'chapters._id': chapterId },
+      {
+        $pull: {
+          chapters: {
+            _id: chapterId,
+          },
+        },
+      }
+    )
+
+    if (removeChapterResult.modifiedCount == 0) {
+      throw createHttpError.InternalServerError('حذف فصل انجام نشد')
+    }
+
+    return res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      message: 'حذف فصل با موفقیت انجام شد',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const getOneChapter = async chapterId => {
+  const { id } = await ObjectIdValidator.validateAsync({ id: chapterId })
+  const chapter = await CourseModel.findOne({ 'chapters._id': id }, { 'chapters.$': 1 })
+  if (!chapter) throw new createHttpError.NotFound('No chapter found with this ID.')
+  return chapter
+}
