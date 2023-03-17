@@ -4,6 +4,10 @@ import UserModels from '../models/user.models.js'
 
 export const verifyAccessToken = (req, res, next) => {
   try {
+    if (!req.headers?.authorization) {
+      return next(createHttpError.Unauthorized('User account not recognized. Login to your account'))
+    }
+
     const [bearer, token] = req.headers?.authorization?.split(' ')
     const validData = ['Bearer', 'bearer']
 
