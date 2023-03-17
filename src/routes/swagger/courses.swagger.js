@@ -137,6 +137,24 @@
 
 /**
  * @swagger
+ *    /courses/{slug}:
+ *       get:
+ *          tags: [Courses(Admin-Panel)]
+ *          summary: get a course by slug
+ *          parameters:
+ *             -  in: path
+ *                name: slug
+ *                type: string
+ *                required: true
+ *          responses:
+ *             200:
+ *                description: successfully
+ *             500:
+ *                description: Internal server error
+ */
+
+/**
+ * @swagger
  * /courses/create:
  *    post:
  *       tags: [Courses(Admin-Panel)]

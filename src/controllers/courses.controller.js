@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 import CourseModel from '../models/course.models.js'
 import { deleteFile } from '../utils/file-system.utils.js'
 import { createCourseSchema, updateCourseSchema } from '../validations/course.validation.js'
-import { ObjectIdValidator } from '../validations/public.validation.js'
+import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
 
 export const getCourses = async (req, res, next) => {
   try {
@@ -15,6 +15,21 @@ export const getCourses = async (req, res, next) => {
       status: StatusCodes.OK,
       success: true,
       courses,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const getCourse = async (req, res, next) => {
+  const { slug } = req.params
+  try {
+    const course = await findCourseBySlug(slug)
+    
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      course,
     })
   } catch (err) {
     next(err)
@@ -90,6 +105,13 @@ export const updateCourse = async (req, res, next) => {
 const findcourseById = async courseId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: courseId })
   const course = await CourseModel.findById(id)
-  if (!course) createHttpError.NotFound('Not found course')
+  if (!course) throw createHttpError.NotFound('Not found course')
+  return course
+}
+
+const findCourseBySlug = async slug => {
+  await SlugValidator.validateAsync({ slug })
+  const course = await CourseModel.findOne({ slug })
+  if (!course) throw createHttpError.NotFound('Not found course')
   return course
 }
