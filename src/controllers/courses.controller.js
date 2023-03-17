@@ -1,9 +1,10 @@
 import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
-import CourseModel from '../models/course.models.js'
 
+import CourseModel from '../models/course.models.js'
 import { deleteFile } from '../utils/file-system.utils.js'
-import { createCourseSchema } from '../validations/course.validation.js'
+import { createCourseSchema, updateCourseSchema } from '../validations/course.validation.js'
+import { ObjectIdValidator } from '../validations/public.validation.js'
 
 export const createCourse = async (req, res, next) => {
   try {
@@ -38,4 +39,42 @@ export const createCourse = async (req, res, next) => {
     deleteFile(thumbnailPath)
     next(err)
   }
+}
+
+export const updateCourse = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const course = await findcourseById(id)
+
+    if (req?.body?.tags) {
+      const tags = req.body.tags.split(',')
+      req.body.tags = tags
+    }
+
+    const courseDataBody = await updateCourseSchema.validateAsync(req.body)
+
+    if (req?.file) {
+      const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
+      courseDataBody.thumbnail = thumbnailPath
+      deleteFile(course.thumbnail)
+    }
+
+    const updatedCourseResult = await CourseModel.updateOne({ _id: id }, { $set: courseDataBody })
+    if (updatedCourseResult.modifiedCount == 0) throw createHttpError.InternalServerError('The course was not updated')
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      status: StatusCodes.OK,
+      message: 'The course has been updated',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const findcourseById = async courseId => {
+  const { id } = await ObjectIdValidator.validateAsync({ id: courseId })
+  const course = await CourseModel.findById(id)
+  if (!course) createHttpError.NotFound('Not found course')
+  return course
 }
