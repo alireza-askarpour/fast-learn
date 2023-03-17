@@ -22,6 +22,21 @@
 
 /**
  * @swagger
+ *    components:
+ *       schemas:
+ *          EditChapter:
+ *             type: object
+ *             properties:
+ *                title:
+ *                   type: string
+ *                   description: the edit title of chapter
+ *                description:
+ *                   type: string
+ *                   description: the edit description of chapter
+ */
+
+/**
+ * @swagger
  *    /chapters/{courseId}:
  *       get:
  *          tags: [Chapters(Admin-Panel)]
@@ -34,7 +49,7 @@
  *          responses:
  *             200:
  *                description: Chapter received successfully
- *             500: 
+ *             500:
  *                description: Internal server error
  */
 
@@ -57,6 +72,36 @@
  *                description: chapter craeted successfully
  *             400:
  *                description: Bad request
+ *             500:
+ *                description: Internal server error
+ */
+
+/**
+ * @swagger
+ *    /chapters/update/{chapterId}:
+ *       patch:
+ *          tags: [Chapters(Admin-Panel)]
+ *          summary: update a chapter by chapter ID
+ *          parameters:
+ *             -  in: path
+ *                name: chapterId
+ *                type: string
+ *                required: true
+ *          requestBody:
+ *             content:
+ *                application/x-www-form-urlencoded:
+ *                   schema:
+ *                      $ref: '#/components/schemas/EditChapter'
+ *                application/json:
+ *                   schema:
+ *                      $ref: '#/components/schemas/EditChapter'
+ *          responses:
+ *             200:
+ *                description: success
+ *             400:
+ *                description: Bad request
+ *             401:
+ *                description: Unauthorization
  *             500:
  *                description: Internal server error
  */

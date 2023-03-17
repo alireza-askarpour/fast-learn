@@ -5,6 +5,7 @@ import CourseModel from '../models/course.models.js'
 
 import { findCourseById } from './courses.controller.js'
 import { ObjectIdValidator } from '../validations/public.validation.js'
+import { ChapterSchema } from '../validations/chapter.validation.js'
 
 export const createChapter = async (req, res, next) => {
   const { id, title, description } = req.body
@@ -44,7 +45,35 @@ export const getChapter = async (req, res, next) => {
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,
-      course
+      course,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const updateChapter = async (req, res, next) => {
+  const { chapterId } = req.params
+  try {
+    const { id } = await ObjectIdValidator.validateAsync({ id: chapterId })
+    const chapterDataBody = ChapterSchema.validateAsync(req.body)
+
+    const chapter = await CourseModel.findOne({ 'chapters._id': id }, { 'chapters.$': 1 })
+    if (!chapter) throw createHttpError.NotFound('No course found with this ID')
+
+    const updateChapterResult = await CourseModel.updateOne(
+      { 'chapters._id': chapterId },
+      { $set: { 'chapters.$': chapterDataBody } }
+    )
+
+    if (updateChapterResult.modifiedCount == 0) {
+      throw createHttpError.InternalServerError('The chapter could not be updated.')
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      message: 'The update was successful.',
     })
   } catch (err) {
     next(err)
