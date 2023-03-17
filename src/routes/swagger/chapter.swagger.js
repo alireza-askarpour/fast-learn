@@ -22,6 +22,24 @@
 
 /**
  * @swagger
+ *    /chapters/{courseId}:
+ *       get:
+ *          tags: [Chapters(Admin-Panel)]
+ *          summary: get a chapter by couse Id
+ *          parameters:
+ *             -  in: path
+ *                name: courseId
+ *                type: string
+ *                required: true
+ *          responses:
+ *             200:
+ *                description: Chapter received successfully
+ *             500: 
+ *                description: Internal server error
+ */
+
+/**
+ * @swagger
  *    /chapters/create:
  *       patch:
  *          tags: [Chapters(Admin-Panel)]
