@@ -74,7 +74,7 @@ export const createCourse = async (req, res, next) => {
 export const updateCourse = async (req, res, next) => {
   const { id } = req.params
   try {
-    const course = await findcourseById(id)
+    const course = await findCourseById(id)
 
     if (req?.body?.tags) {
       const tags = req.body.tags.split(',')
@@ -102,7 +102,7 @@ export const updateCourse = async (req, res, next) => {
   }
 }
 
-const findcourseById = async courseId => {
+export const findCourseById = async courseId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: courseId })
   const course = await CourseModel.findById(id)
   if (!course) throw createHttpError.NotFound('Not found course')

@@ -4,7 +4,7 @@ import { CommentSchema } from './public.schema.js'
 const EpisodeMoedls = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    text: { type: String, required: true },
+    description: { type: String, required: true },
     type: { type: String, default: 'unlock' },
     time: { type: String, required: true },
     videoAddress: { type: String, required: true },
@@ -15,7 +15,7 @@ const EpisodeMoedls = new mongoose.Schema(
 const ChapterMoedls = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    text: { type: String, default: '' },
+    description: { type: String, default: '' },
     episodes: { type: [EpisodeMoedls], default: [] },
   },
   { versionKey: false, timestamps: true }
