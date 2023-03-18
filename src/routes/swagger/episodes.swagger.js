@@ -63,7 +63,7 @@
  * @swagger
  *  /episodes/create:
  *      post:
- *          tags: [Episode(AdminPanel)]
+ *          tags: [Episodes(Admin-Panel)]
  *          summary: create new Chapter for courses
  *          requestBody:
  *              required: true
@@ -74,6 +74,26 @@
  *          responses:
  *              201:
  *                  description: success - created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/publicDefinition'
+ */
+
+/**
+ * @swagger
+ *  /episodes/remove/{episodeId}:
+ *      delete:
+ *          tags: [Episodes(Admin-Panel)]
+ *          summary: remove episode by episode ID
+ *          parameters:
+ *             -  in: path
+ *                name: episodeId
+ *                type: string
+ *                required: true
+ *          responses:
+ *              200:
+ *                  description: success - removed
  *                  content:
  *                      application/json:
  *                          schema:

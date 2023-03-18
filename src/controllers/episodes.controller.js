@@ -6,6 +6,7 @@ import CourseModel from '../models/course.models.js'
 
 import { getTimeOfEpisode } from '../utils/get-time.utils.js'
 import { createEpisodeSchema } from '../validations/episode.validation.js'
+import { ObjectIdValidator } from '../validations/public.validation.js'
 
 export const createEpisode = async (req, res, next) => {
   try {
@@ -44,7 +45,7 @@ export const createEpisode = async (req, res, next) => {
     )
 
     if (createEpisodeResult.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('افزودن اپیزود انجام نشد')
+      throw createHttpError.InternalServerError('Failed to add episode')
     }
 
     res.status(StatusCodes.CREATED).json({
@@ -56,4 +57,51 @@ export const createEpisode = async (req, res, next) => {
   } catch (err) {
     next(err)
   }
+}
+
+export const removeEpisode = async (req, res, next) => {
+  try {
+    const { id: episodeId } = await ObjectIdValidator.validateAsync({ id: req.params.episodeId })
+    const episode = await getOneEpisode(episodeId)
+
+    const removeEpisodeResult = await CourseModel.updateOne(
+      {
+        'chapters.episodes._id': episodeId,
+      },
+      {
+        $pull: {
+          'chapters.$.episodes': {
+            _id: episodeId,
+          },
+        },
+      }
+    )
+
+    if (removeEpisodeResult.modifiedCount == 0) {
+      throw createHttpError.InternalServerError('Failed to delete episode')
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      message: 'The episode was successfully deleted',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const getOneEpisode = async episodeId => {
+  const course = await CourseModel.findOne(
+    { 'chapters.episodes._id': episodeId },
+    {
+      'chapters.episodes.$': 1,
+    }
+  )
+  if (!course) throw new createHttpError.NotFound('اپیزودی یافت نشد')
+
+  const episode = course?.chapters?.[0]?.episodes?.[0]
+  if (!episode) throw new createHttpError.NotFound('اپیزودی یافت نشد')
+
+  return { ...episode }
 }
