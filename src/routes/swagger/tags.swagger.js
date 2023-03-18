@@ -1,5 +1,5 @@
 /**
- * @swaggere
+ * @swagger
  *    tags:
  *    -  name: User-Authentication
  *       description: user-auth section
@@ -7,6 +7,8 @@
  *       description: management couese section
  *    -  name: Chapters(Admin-Panel)
  *       description: management chapter section
+ *    -  name: Episodes(Admin-Panel)
+ *       description: management episode section
  *    -  name: Categories(Admin-Panel)
  *       description: all method and routes about category section
  */

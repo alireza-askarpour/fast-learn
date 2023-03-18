@@ -19,7 +19,7 @@ const thumbnailStorage = multer.diskStorage({
 
 const videoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const directory = './uploads/videos'
+    const directory = './uploads/episodes'
     fs.mkdirSync(directory, { recursive: true })
     return cb(null, directory)
   },
