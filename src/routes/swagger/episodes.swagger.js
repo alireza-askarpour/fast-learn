@@ -14,18 +14,18 @@
  *              properties:
  *                  courseId:
  *                      type: string
- *                      example: 63f7c19528a5df3d2db7c53f
+ *                      example: 6412ccd257e06c4757efeb22
  *                  chapterId:
  *                      type: string
- *                      example: 63fe3d7998e52ba03a8ee0ef
+ *                      example: 64148e3d4bf12e7869084dca
  *                  title:
  *                      type: string
  *                      description: the title of episode
- *                      example: ویدیو شماره یک - متغیر ها
+ *                      example: video number one
  *                  description:
  *                      type: string
  *                      description: the describe about this episode
- *                      example: توی این قسمت بطور کامل دررابطه با .... گفته شده
+ *                      example: In this episode, it is said about...
  *                  type:
  *                      type: string
  *                      description: the episode type (unlock or lock)
@@ -38,15 +38,24 @@
  *                      format: binary
  *          EditEpisode:
  *              type: object
+ *              required: true
+ *                -  courseId
+ *                -  chapterId
  *              properties:
+ *                  courseId:
+ *                      type: string
+ *                      example: 6412ccd257e06c4757efeb22
+ *                  chapterId:
+ *                      type: string
+ *                      example: 64148e3d4bf12e7869084dca
  *                  title:
  *                      type: string
  *                      description: the title of episode
- *                      example: ویدیو شماره یک - متغیر ها
+ *                      example: edit video number two
  *                  description:
  *                      type: string
  *                      description: the describe about this episode
- *                      example: توی این قسمت بطور کامل دررابطه با .... گفته شده
+ *                      example: edit In this episode, it is said about...
  *                  type:
  *                      type: string
  *                      description: the episode type (unlock or lock)
@@ -71,6 +80,32 @@
  *                  multipart/form-data:
  *                      schema:
  *                          $ref: '#/components/schemas/AddEpisode'
+ *          responses:
+ *              201:
+ *                  description: success - created
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/publicDefinition'
+ */
+
+/**
+ * @swagger
+ *  /episodes/update/{episodeId}:
+ *      patch:
+ *          tags: [Episodes(Admin-Panel)]
+ *          summary: edit episode of chapter
+ *          parameters:
+ *              -   in: path
+ *                  name: episodeId
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/EditEpisode'
  *          responses:
  *              201:
  *                  description: success - created

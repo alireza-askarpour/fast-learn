@@ -4,9 +4,11 @@ import { getVideoDurationInSeconds } from 'get-video-duration'
 
 import CourseModel from '../models/course.models.js'
 
-import { getTimeOfEpisode } from '../utils/get-time.utils.js'
-import { createEpisodeSchema } from '../validations/episode.validation.js'
+import { createEpisodeSchema, updateEpisodeSchema } from '../validations/episode.validation.js'
 import { ObjectIdValidator } from '../validations/public.validation.js'
+
+import { getTimeOfEpisode } from '../utils/get-time.utils.js'
+import { deleteFile } from '../utils/file-system.utils.js'
 
 export const createEpisode = async (req, res, next) => {
   try {
@@ -59,6 +61,49 @@ export const createEpisode = async (req, res, next) => {
   }
 }
 
+export const updateEpisode = async (req, res, next) => {
+  const { episodeId } = req.params
+  try {
+    const episode = await getOneEpisode(episodeId)
+    const episodeDataBody = await updateEpisodeSchema.validateAsync(req.body)
+
+    if (req?.file) {
+      const videoAddress = req?.file?.path?.replace(/\\/g, '/')
+      const videoURL = `${process.env.BASE_URL}/${videoAddress}`
+      const seconds = await getVideoDurationInSeconds(videoURL)
+      const time = getTimeOfEpisode(seconds)
+
+      episodeDataBody.videoAddress = videoAddress
+      episodeDataBody.time = time
+
+      deleteFile(episode.videoAddress)
+    }
+
+    const editEpisodeResult = await CourseModel.updateOne(
+      {
+        'chapters.episodes._id': episodeId,
+      },
+      {
+        $set: {
+          'chapters.$.episodes': episodeDataBody,
+        },
+      }
+    )
+
+    if (!editEpisodeResult.modifiedCount) {
+      throw createHttpError.InternalServerError('The episode could not be edited.')
+    }
+
+    res.status(StatusCodes.OK).json({
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'The episode was edited successfully',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const removeEpisode = async (req, res, next) => {
   try {
     const { id: episodeId } = await ObjectIdValidator.validateAsync({ id: req.params.episodeId })
@@ -92,16 +137,18 @@ export const removeEpisode = async (req, res, next) => {
 }
 
 const getOneEpisode = async episodeId => {
+  const { id } = await ObjectIdValidator.validateAsync({ id: episodeId })
+
   const course = await CourseModel.findOne(
-    { 'chapters.episodes._id': episodeId },
+    { 'chapters.episodes._id': id },
     {
       'chapters.episodes.$': 1,
     }
   )
-  if (!course) throw new createHttpError.NotFound('اپیزودی یافت نشد')
+  if (!course) throw createHttpError.NotFound('No episode found.')
 
   const episode = course?.chapters?.[0]?.episodes?.[0]
-  if (!episode) throw new createHttpError.NotFound('اپیزودی یافت نشد')
+  if (!episode) throw createHttpError.NotFound('No episodes found')
 
-  return { ...episode }
+  return episode
 }

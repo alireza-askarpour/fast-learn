@@ -10,3 +10,11 @@ export const createEpisodeSchema = Joi.object({
   chapterId: Joi.string().pattern(MONGO_ID_PATTERN).required().error(createHttpError.BadRequest('The chapterID is not correct')),
   courseId: Joi.string().pattern(MONGO_ID_PATTERN).required().error(createHttpError.BadRequest('The courseID is not correct')),
 })
+
+export const updateEpisodeSchema = Joi.object({
+  title: Joi.string().min(3).max(30).error(createHttpError.BadRequest('The title of the course is not correct')),
+  description: Joi.string().error(createHttpError.BadRequest('The description sent is not correct')),
+  type: Joi.string().pattern(/(lock|unlock)/i).error(createHttpError.BadRequest("The type entered is incorrect")),
+  chapterId: Joi.string().pattern(MONGO_ID_PATTERN).required().error(createHttpError.BadRequest('The chapterID is not correct')),
+  courseId: Joi.string().pattern(MONGO_ID_PATTERN).required().error(createHttpError.BadRequest('The courseID is not correct')),
+})
