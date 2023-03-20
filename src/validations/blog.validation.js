@@ -7,5 +7,4 @@ export const createBlogSchema = Joi.object({
   content: Joi.string().required().error(createHttpError.BadRequest('The type content is incorrect')),
   slug: Joi.string().required().error(createHttpError.BadRequest('The slug entered is incorrect')),
   tags: Joi.array().min(0).max(20).required().error(createHttpError.BadRequest('The tags entered is incorrect')),
-  reading_time: Joi.string().required().error(createHttpError.BadRequest('The reading time entered is incorrect')),
 })

@@ -1,13 +1,15 @@
 import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
+import readingTime from 'reading-time'
 
 import BlogModel from '../models/blog.models.js'
 import { createBlogSchema } from '../validations/blog.validation.js'
 import { nanoid, alphabetLetters, alphabetNumber } from '../config/nanoid.config.js'
+import { getOnlyText } from '../utils/get-only-text.utils.js'
 
 export const createBlog = async (req, res, next) => {
   try {
-    const { title, description, content, slug, tags, reading_time } = await createBlogSchema.validateAsync(req.body)
+    const { title, description, content, slug, tags } = await createBlogSchema.validateAsync(req.body)
 
     const thumbnail = req?.file?.path?.replace(/\\/g, '/')
     const author = req.user._id
@@ -21,10 +23,10 @@ export const createBlog = async (req, res, next) => {
       content,
       slug,
       tags,
-      reading_time,
       thumbnail,
       author,
       short_link: nanoid(alphabetLetters + alphabetNumber, 5),
+      reading_time: readingTime(getOnlyText(content)),
     }
 
     const blog = await BlogModel.create(newBlog)

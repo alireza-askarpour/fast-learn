@@ -10,7 +10,6 @@
  *                -  content
  *                -  slug
  *                -  tags
- *                -  reading_time
  *             properties:
  *                title:
  *                   type: string
@@ -27,9 +26,6 @@
  *                tags:
  *                   type: array
  *                   description: the tags of blog
- *                reading_time:
- *                   type: string
- *                   description: the reading_time of blog
  *                thumbnail:
  *                   type: string
  *                   format: binary
