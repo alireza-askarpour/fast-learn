@@ -7,8 +7,19 @@ import { createCourseSchema, updateCourseSchema } from '../validations/course.va
 import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
 
 export const getCourses = async (req, res, next) => {
+  const { search } = req.query
   try {
-    const courses = await CourseModel.find()
+    let courses
+      courses = await CourseModel.find(search ? { $text: { $search: search } } : {})
+        .populate([
+          { path: 'category', select: { children: 0, parent: 0 } },
+          {
+            path: 'teacher',
+            select: { first_name: 1, last_name: 1, mobile: 1, email: 1 },
+          },
+        ])
+        .sort({ _id: -1 })
+
     if (!courses) throw createHttpError.InternalServerError('The list of courses was not received')
 
     res.status(StatusCodes.OK).json({
@@ -25,7 +36,7 @@ export const getCourse = async (req, res, next) => {
   const { slug } = req.params
   try {
     const course = await findCourseBySlug(slug)
-    
+
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,

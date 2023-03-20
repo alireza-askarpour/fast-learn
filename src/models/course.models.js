@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { getTimeOfCourse } from '../utils/get-time.utils.js'
 import { CommentSchema } from './public.schema.js'
 
 const EpisodeMoedls = new mongoose.Schema(
@@ -9,7 +10,7 @@ const EpisodeMoedls = new mongoose.Schema(
     time: { type: String, required: true },
     videoAddress: { type: String, required: true },
   },
-  { versionKey: false, toJSON: { virtuals: true, timestamps: true } }
+  { versionKey: false, toJSON: { virtuals: true }, timestamps: true }
 )
 
 const ChapterMoedls = new mongoose.Schema(
@@ -21,7 +22,7 @@ const ChapterMoedls = new mongoose.Schema(
   { versionKey: false, timestamps: true }
 )
 
-const CourseMoedls = new mongoose.Schema(
+const CourseSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -35,7 +36,7 @@ const CourseMoedls = new mongoose.Schema(
     status: { type: String, required: true, enum: ['soon', 'holding', 'completed'] },
     level: { type: String, required: true, enum: ['beginner', 'intermediate', 'advanced'] },
     short_link: { type: String },
-    category: { type: mongoose.Types.ObjectId, required: true },
+    category: { type: mongoose.Types.ObjectId, ref: 'category', required: true },
     comments: { type: [CommentSchema], default: [] },
     like: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
     deslike: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
@@ -45,7 +46,16 @@ const CourseMoedls = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
+    toJSON: {
+      virtuals: true,
+    },
   }
 )
 
-export default mongoose.model('course', CourseMoedls)
+CourseSchema.index({ title: 'text', description: 'text' })
+
+CourseSchema.virtual('totalTime').get(function () {
+  return getTimeOfCourse(this.chapters || [])
+})
+
+export default mongoose.model('course', CourseSchema)

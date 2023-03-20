@@ -42,4 +42,14 @@ export const getTimeOfCourse = (chapters = []) => {
       }
     }
   }
+
+  hour = Math.floor(second / 3600) //convert second to hour
+  minute = Math.floor(second / 60) % 60 //convert second to mintutes
+  second = Math.floor(second % 60) //convert seconds to second
+
+  if (String(hour).length == 1) hour = `0${hour}`
+  if (String(minute).length == 1) minute = `0${minute}`
+  if (String(second).length == 1) second = `0${second}`
+
+  return hour + ':' + minute + ':' + second
 }

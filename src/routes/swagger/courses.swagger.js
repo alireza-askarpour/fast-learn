@@ -128,6 +128,11 @@
  *       get:
  *          tags: [Courses(Admin-Panel)]
  *          summary: get all courses
+ *          parameters:
+ *             -  in: query
+ *                name: search
+ *                type: string
+ *                description: search in course, title, description
  *          responses:
  *             200:
  *                description: successfully
