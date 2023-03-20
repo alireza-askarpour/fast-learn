@@ -110,6 +110,23 @@ export const getBlog = async (req, res, next) => {
   }
 }
 
+export const getBlogs = async (req, res, next) => {
+  try {
+    const blogs = await BlogModel.find()
+    if (!blogs) {
+      throw createHttpError.InternalServerError('The list of blogs was not received')
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      blogs,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const findBlogById = async blogId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: blogId })
   const blog = await BlogModel.findById(id)

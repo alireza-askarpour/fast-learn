@@ -123,3 +123,13 @@
  *                description: blog resived successfully
  */
 
+/**
+ * @swagger
+ *    /blogs/list:
+ *       get:
+ *          tags: [Blogs(Admin-Panel)]
+ *          summary: Get blogs List
+ *          responses:
+ *             200:
+ *                description: blog resived successfully
+ */
