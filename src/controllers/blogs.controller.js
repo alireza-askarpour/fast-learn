@@ -42,6 +42,10 @@ export const createBlog = async (req, res, next) => {
       message: 'Blog has been successfully created',
     })
   } catch (err) {
+    if (req?.file) {
+      const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
+      deleteFile(thumbnailPath)
+    }
     next(err)
   }
 }
@@ -73,6 +77,10 @@ export const updateBlog = async (req, res, next) => {
       message: 'Blog has been successfully updated',
     })
   } catch (err) {
+    if (req?.file) {
+      const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
+      deleteFile(thumbnailPath)
+    }
     next(err)
   }
 }

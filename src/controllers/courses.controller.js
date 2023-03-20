@@ -76,8 +76,10 @@ export const createCourse = async (req, res, next) => {
       course,
     })
   } catch (err) {
-    const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
-    deleteFile(thumbnailPath)
+    if (req?.file) {
+      const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
+      deleteFile(thumbnailPath)
+    }
     next(err)
   }
 }
