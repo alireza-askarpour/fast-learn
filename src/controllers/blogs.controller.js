@@ -77,9 +77,27 @@ export const updateBlog = async (req, res, next) => {
   }
 }
 
+export const removeBlog = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    await findBlog(id)
+
+    const result = await BlogModel.deleteOne({ _id: id })
+    if (result.deletedCount == 0) throw createError.InternalServerError('Delete failed')
+
+    res.status(StatusCodes.OK).json({
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'The blog was successfully deleted',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const findBlog = async blogId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: blogId })
   const blog = await BlogModel.findById(id)
-  if (!blog) throw createError.NotFound('No post found')
+  if (!blog) throw createError.NotFound('No blog found')
   return blog
 }

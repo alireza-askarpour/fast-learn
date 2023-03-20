@@ -66,7 +66,7 @@
  *                      $ref: '#/components/schemas/AddBlog'
  *          responses:
  *             201:
- *                description: post created successfully
+ *                description: blog created successfully
  */
 
 /**
@@ -88,5 +88,21 @@
  *                      $ref: '#/components/schemas/EditBlog'
  *          responses:
  *             200:
- *                description: post updated successfully
+ *                description: blog updated successfully
+ */
+
+/**
+ * @swagger
+ *    /blogs/remove/{id}:
+ *       delete:
+ *          tags: [Blogs(Admin-Panel)]
+ *          summary: Remove blog by ID
+ *          parameters:
+ *             -  in: path
+ *                name: id
+ *                type: string
+ *                required: true
+ *          responses:
+ *             200:
+ *                description: blog removed successfully
  */
