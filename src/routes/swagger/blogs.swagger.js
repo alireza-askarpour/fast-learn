@@ -29,6 +29,27 @@
  *                thumbnail:
  *                   type: string
  *                   format: binary
+ *          EditBlog:
+ *             type: object
+ *             properties:
+ *                title:
+ *                   type: string
+ *                   description: the title of blog
+ *                description:
+ *                   type: string
+ *                   description: the description of blog
+ *                content:
+ *                   type: string
+ *                   description: the content of blog
+ *                slug:
+ *                   type: string
+ *                   description: the slug of blog
+ *                tags:
+ *                   type: array
+ *                   description: the tags of blog
+ *                thumbnail:
+ *                   type: string
+ *                   format: binary
  */
 
 /**
@@ -46,4 +67,26 @@
  *          responses:
  *             201:
  *                description: post created successfully
+ */
+
+/**
+ * @swagger
+ *    /blogs/update/{id}:
+ *       patch:
+ *          tags: [Blogs(Admin-Panel)]
+ *          summary: update blog by ID
+ *          parameters:
+ *             -  in: path
+ *                name: id
+ *                type: string
+ *                required: true
+ *          requestBody:
+ *             required: true
+ *             content:
+ *                multipart/form-data:
+ *                   schema:
+ *                      $ref: '#/components/schemas/EditBlog'
+ *          responses:
+ *             200:
+ *                description: post updated successfully
  */
