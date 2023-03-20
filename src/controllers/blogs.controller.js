@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import BlogModel from '../models/blog.models.js'
 
 import { createBlogSchema, updateBlogSchema } from '../validations/blog.validation.js'
-import { ObjectIdValidator } from '../validations/public.validation.js'
+import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
 
 import { nanoid, alphabetLetters, alphabetNumber } from '../config/nanoid.config.js'
 import { getOnlyText } from '../utils/get-only-text.utils.js'
@@ -49,7 +49,7 @@ export const createBlog = async (req, res, next) => {
 export const updateBlog = async (req, res, next) => {
   const { id } = req.params
   try {
-    const blog = await findBlog(id)
+    const blog = await findBlogById(id)
 
     if (req?.body?.tags) {
       const tags = req.body.tags.split(',')
@@ -80,7 +80,7 @@ export const updateBlog = async (req, res, next) => {
 export const removeBlog = async (req, res, next) => {
   const { id } = req.params
   try {
-    await findBlog(id)
+    await findBlogById(id)
 
     const result = await BlogModel.deleteOne({ _id: id })
     if (result.deletedCount == 0) throw createError.InternalServerError('Delete failed')
@@ -95,9 +95,31 @@ export const removeBlog = async (req, res, next) => {
   }
 }
 
-const findBlog = async blogId => {
+export const getBlog = async (req, res, next) => {
+  const { slug } = req.params
+  try {
+    const blog = await findBlogBySlug(slug)
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      blog,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const findBlogById = async blogId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: blogId })
   const blog = await BlogModel.findById(id)
-  if (!blog) throw createError.NotFound('No blog found')
+  if (!blog) throw createHttpError.NotFound('Not found blog')
+  return blog
+}
+
+const findBlogBySlug = async blogSlug => {
+  const { slug } = await SlugValidator.validateAsync({ slug: blogSlug })
+  const blog = await BlogModel.findOne({ slug })
+  if (!blog) throw createHttpError.NotFound('Not found blog')
   return blog
 }

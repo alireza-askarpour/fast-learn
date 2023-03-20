@@ -106,3 +106,20 @@
  *             200:
  *                description: blog removed successfully
  */
+
+/**
+ * @swagger
+ *    /blogs/{slug}:
+ *       get:
+ *          tags: [Blogs(Admin-Panel)]
+ *          summary: Get blog by slug
+ *          parameters:
+ *             -  in: path
+ *                name: slug
+ *                type: string
+ *                required: true
+ *          responses:
+ *             200:
+ *                description: blog resived successfully
+ */
+
