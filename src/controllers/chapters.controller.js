@@ -10,9 +10,7 @@ import { ChapterSchema } from '../validations/chapter.validation.js'
 export const createChapter = async (req, res, next) => {
   const { id, title, description } = req.body
   try {
-    console.log(id, title, description)
     await findCourseById(id)
-    const chapters = { title, description, episodes: [] }
 
     const createChapterResult = await CourseModel.updateOne(
       { _id: id },
@@ -97,13 +95,13 @@ export const removeChapter = async (req, res, next) => {
     )
 
     if (removeChapterResult.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('حذف فصل انجام نشد')
+      throw createHttpError.InternalServerError('Season deletion was not done')
     }
 
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,
-      message: 'حذف فصل با موفقیت انجام شد',
+      message: 'Delete the chapter successfully',
     })
   } catch (err) {
     next(err)

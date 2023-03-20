@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import { getTimeOfCourse } from '../utils/get-time.utils.js'
 import { CommentSchema } from './public.schema.js'
 
-const EpisodeMoedls = new mongoose.Schema(
+const EpisodeSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -13,11 +13,11 @@ const EpisodeMoedls = new mongoose.Schema(
   { versionKey: false, toJSON: { virtuals: true }, timestamps: true }
 )
 
-const ChapterMoedls = new mongoose.Schema(
+const ChapterSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, default: '' },
-    episodes: { type: [EpisodeMoedls], default: [] },
+    episodes: { type: [EpisodeSchema], default: [] },
   },
   { versionKey: false, timestamps: true }
 )
@@ -41,7 +41,7 @@ const CourseSchema = new mongoose.Schema(
     like: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
     deslike: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
     bookmark: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
-    chapters: { type: [ChapterMoedls], default: [] },
+    chapters: { type: [ChapterSchema], default: [] },
   },
   {
     timestamps: true,

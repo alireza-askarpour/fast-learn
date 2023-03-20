@@ -10,15 +10,15 @@ export const getCourses = async (req, res, next) => {
   const { search } = req.query
   try {
     let courses
-      courses = await CourseModel.find(search ? { $text: { $search: search } } : {})
-        .populate([
-          { path: 'category', select: { children: 0, parent: 0 } },
-          {
-            path: 'teacher',
-            select: { first_name: 1, last_name: 1, mobile: 1, email: 1 },
-          },
-        ])
-        .sort({ _id: -1 })
+    courses = await CourseModel.find(search ? { $text: { $search: search } } : {})
+      .populate([
+        { path: 'category', select: { children: 0, parent: 0 } },
+        {
+          path: 'teacher',
+          select: { first_name: 1, last_name: 1, mobile: 1, email: 1 },
+        },
+      ])
+      .sort({ _id: -1 })
 
     if (!courses) throw createHttpError.InternalServerError('The list of courses was not received')
 
@@ -109,6 +109,10 @@ export const updateCourse = async (req, res, next) => {
       message: 'The course has been updated',
     })
   } catch (err) {
+    if (req?.file) {
+      const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
+      deleteFile(thumbnailPath)
+    }
     next(err)
   }
 }

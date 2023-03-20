@@ -1,6 +1,6 @@
 export const stringToArray = (...args) => {
   return (req, res, next) => {
-  const fields = args
+    const fields = args
     fields.forEach(field => {
       if (req.body[field]) {
         if (typeof req.body[field] == 'string') {

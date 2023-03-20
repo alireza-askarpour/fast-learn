@@ -1,9 +1,5 @@
 import mongoose from 'mongoose'
-import {
-  nanoid,
-  alphabetNumber,
-  alphabetLowerCaseLetters,
-} from '../config/nanoid.config.js'
+import { nanoid, alphabetNumber, alphabetLowerCaseLetters } from '../config/nanoid.config.js'
 
 const UserModel = new mongoose.Schema(
   {
