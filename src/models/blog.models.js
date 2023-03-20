@@ -8,7 +8,7 @@ const BlogSchema = mongoose.Schema(
     author: { type: mongoose.Types.ObjectId, ref: 'user', required: true },
     thumbnail: { type: String, default: '', required: true },
     slug: { type: String, required: true, min: 3, max: 255, unique: true },
-    short_link: { type: String },
+    short_link: { type: String, required: true },
     views: { type: Number, default: 0 },
     tags: { type: [String], default: [] },
     reading_time: { type: Object, required: true },

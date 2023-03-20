@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import BlogModel from '../models/blog.models.js'
 import { createBlogSchema } from '../validations/blog.validation.js'
+import { nanoid, alphabetLetters, alphabetNumber } from '../config/nanoid.config.js'
 
 export const createBlog = async (req, res, next) => {
   try {
@@ -12,10 +13,7 @@ export const createBlog = async (req, res, next) => {
     const author = req.user._id
 
     const existSlug = await BlogModel.findOne({ slug })
-
-    if (existSlug) {
-      throw createHttpError.BadRequest('The slug entered already existed')
-    }
+    if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
 
     const newBlog = {
       title,
@@ -26,6 +24,7 @@ export const createBlog = async (req, res, next) => {
       reading_time,
       thumbnail,
       author,
+      short_link: nanoid(alphabetLetters + alphabetNumber, 5),
     }
 
     const blog = await BlogModel.create(newBlog)
