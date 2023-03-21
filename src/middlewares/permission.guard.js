@@ -3,7 +3,7 @@ import createHttpError from 'http-errors'
 import PermissionsModel from '../models/permission.models.js'
 import RoleModel from '../models/role.models.js'
 
-import PERMISSIONS from '../../utils/constants.js'
+import PERMISSIONS from '../constants/RBACK.constant.js'
 
 export const checkPermission = (requiredPermissions = []) => {
   return async (req, res, next) => {
