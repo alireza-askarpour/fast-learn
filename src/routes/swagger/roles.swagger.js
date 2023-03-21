@@ -51,7 +51,7 @@
  *  /roles/create:
  *      post:
  *          tags: [RBAC(Admin-Panel)]
- *          summary: create new Role
+ *          summary: create new role
  *          requestBody:
  *              required: true
  *              content:
@@ -69,7 +69,7 @@
  *  /roles/update/{id}:
  *      patch:
  *          tags: [RBAC(Admin-Panel)]
- *          summary: edit the Role
+ *          summary: edit role by ID
  *          parameters:
  *              -   in: path
  *                  name: id
@@ -84,5 +84,23 @@
  *          responses:
  *              200:
  *                  description: Edited the role successfully
+ *
+ */
+
+/**
+ * @swagger
+ *  /roles/remove/{field}:
+ *      delete:
+ *          tags: [RBAC(Admin-Panel)]
+ *          summary: remove role by ID or Title
+ *          parameters:
+ *              -   in: path
+ *                  name: field
+ *                  type: string
+ *                  required: true
+ *                  description: send title of role or objectId of role for remove that
+ *          responses:
+ *              200:
+ *                  description: removed the Role
  *
  */

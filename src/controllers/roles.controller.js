@@ -81,6 +81,30 @@ export const updateRole = async (req, res, next) => {
 }
 
 /**
+ * Remove role with Id or title
+ */
+export const removeRole = async (req, res, next) => {
+  const { field } = req.params
+  try {
+    const role = await findRoleWithIdOrTitle(field)
+
+    const removeRoleResult = await RoleModel.deleteOne({ _id: role._id })
+
+    if (!removeRoleResult.deletedCount) {
+      throw createHttpError.InternalServerError('Failed to delete role')
+    }
+
+    res.status(StatusCodes.OK).json({
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'The role was successfully deleted',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
  * Find role with Id or title
  */
 const findRoleWithIdOrTitle = async field => {
