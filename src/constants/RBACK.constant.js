@@ -3,3 +3,11 @@ export const ROLES = Object.freeze({
   WRITER: 'writer',
   ADMIN: 'admin',
 })
+
+export const PERMISSIONS = Object.freeze({
+  STUDENT: ['profile'],
+  ADMIN: ['all'],
+  WRITER: ['blog'],
+  TEACHER: ['course', 'blog'],
+  ALL: 'all',
+})
