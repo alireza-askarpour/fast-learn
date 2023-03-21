@@ -100,3 +100,23 @@ export const refreshToken = async (req, res, next) => {
     next(err)
   }
 }
+
+/**
+ * Get logged in user
+ */
+export const getMe = async (req, res, next) => {
+  try {
+    if (!req?.user) throw createHttpError.Unauthorized('User unauthorized')
+
+    const userId = req.user._id
+    const user = await UserModel.findById(userId, { password: 0, otp: 0 })
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      user,
+    })
+  } catch (err) {
+    next(err)
+  }
+}

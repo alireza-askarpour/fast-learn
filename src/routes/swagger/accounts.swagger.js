@@ -109,3 +109,20 @@
  *             500:
  *                description: internal server error
  */
+
+/**
+ * @swagger
+ *    /accounts/get-me:
+ *       get:
+ *          tags: [User-Authentication]
+ *          summary: get logged in user
+ *          responses:
+ *             201:
+ *                description: Success
+ *             400:
+ *                description: Bad request
+ *             401:
+ *                description: Unauthorization
+ *             500:
+ *                description: Internal server error
+ */
