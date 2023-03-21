@@ -15,4 +15,6 @@
  *       description: all method and routes about category section
  *    -  name: Users(Admin-Panel)
  *       description: management users
+ *    -  name: Permissions(Admin-Panel)
+ *       description: management permimssion section
  */
