@@ -2,6 +2,7 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import PermissionModel from '../models/permission.models.js'
+import { createPermissionSchema } from '../validations/RBAC.validation.js'
 
 /**
  * Get all permissions
@@ -18,6 +19,29 @@ export const getPermissions = async (req, res, next) => {
       status: StatusCodes.OK,
       success: true,
       permissions,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
+ * Create new permission
+ */
+export const createPermission = async (req, res, next) => {
+  try {
+    const { name, description } = await createPermissionSchema.validateAsync(req.body)
+
+    const permission = await PermissionModel.findOne({ name })
+    if (permission) throw createHttpError.BadRequest('Access has already been existed')
+
+    const permissionResult = await PermissionModel.create({ name, description })
+    if (!permissionResult) throw createHttpError.InternalServerError('Permission was not granted')
+
+    res.status(StatusCodes.CREATED).json({
+      status: StatusCodes.CREATED,
+      success: true,
+      message: 'Permission was successfully established',
     })
   } catch (err) {
     next(err)

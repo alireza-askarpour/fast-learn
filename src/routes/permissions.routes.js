@@ -1,9 +1,10 @@
 import express from 'express'
 
-import { getPermissions } from '../controllers/permissions.controller.js'
+import { createPermission, getPermissions } from '../controllers/permissions.controller.js'
 
 const router = express.Router()
 
 router.get('/list', getPermissions)
+router.post('/create', createPermission)
 
 export default router

@@ -21,7 +21,7 @@ router.use('/chapters', verifyAccessToken, chaptersRoutes)
 router.use('/episodes', verifyAccessToken, episodesRoutes)
 router.use('/blogs', verifyAccessToken, blogsRoutes)
 router.use('/users', verifyAccessToken, usersRoutes)
-router.use('/permissions', verifyAccessToken, permissionsRoutes)
+router.use('/permissions', permissionsRoutes)
 router.use(homeRoutes)
 
 export default router

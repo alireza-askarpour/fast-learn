@@ -1,6 +1,8 @@
 /**
  * @swagger
  *    tags:
+ *    -  name: RBAC(Admin-Panel)
+ *       description: management permimssion section
  *    -  name: User-Authentication
  *       description: user-auth section
  *    -  name: Courses(Admin-Panel)
@@ -15,6 +17,4 @@
  *       description: all method and routes about category section
  *    -  name: Users(Admin-Panel)
  *       description: management users
- *    -  name: Permissions(Admin-Panel)
- *       description: management permimssion section
  */
