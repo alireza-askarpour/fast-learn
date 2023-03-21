@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import { nanoid, alphabetNumber, alphabetLowerCaseLetters } from '../config/nanoid.config.js'
 
-const UserModel = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
     first_name: { type: String },
     last_name: { type: String },
@@ -30,7 +30,10 @@ const UserModel = new mongoose.Schema(
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 )
 
-export default mongoose.model('user', UserModel)
+UserSchema.index({ first_name: 'text', last_name: 'text', username: 'text', mobile: 'text' })
+
+export default mongoose.model('user', UserSchema)
