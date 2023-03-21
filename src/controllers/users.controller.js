@@ -43,3 +43,26 @@ export const getUser = async (req, res, next) => {
     next(err)
   }
 }
+
+/**
+ * Remove a user by ID
+ */
+export const removeUser = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const { id: userId } = await ObjectIdValidator.validateAsync({ id })
+
+    const removedUserResult = await UserModel.deleteOne({ _id: userId })
+    if (removedUserResult.deletedCount == 0) {
+      throw createHttpError.InternalServerError('The user could not be deleted')
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      message: 'User deleted successfully',
+    })
+  } catch (err) {
+    next(err)
+  }
+}

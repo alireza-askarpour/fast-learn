@@ -38,3 +38,24 @@
  *                description: Internal server error
  *
  */
+
+/**
+ * @swagger
+ *    /users/remove/{id}:
+ *       delete:
+ *          tags: [Users(Admin-Panel)]
+ *          summary: remove user by ID
+ *          parameters:
+ *             -  in: path
+ *                name: id
+ *                type: string
+ *                required: true
+ *          responses:
+ *             200:
+ *                description: Success
+ *             401:
+ *                description: Unauthorized
+ *             500:
+ *                description: Internal server error
+ *
+ */
