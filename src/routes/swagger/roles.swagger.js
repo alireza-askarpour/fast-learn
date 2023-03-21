@@ -17,6 +17,18 @@
  *                  permissions:
  *                      type: array
  *                      description: the permissions ID for role
+ *          EditRole:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of role
+ *                  description:
+ *                      type: string
+ *                      description: the desc of role
+ *                  permissions:
+ *                      type: array
+ *                      description: the permissionsID for role
  */
 
 /**
@@ -49,5 +61,28 @@
  *          responses:
  *              201:
  *                  description: created new Role
+ *
+ */
+
+/**
+ * @swagger
+ *  /roles/update/{id}:
+ *      patch:
+ *          tags: [RBAC(Admin-Panel)]
+ *          summary: edit the Role
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/EditRole'
+ *          responses:
+ *              200:
+ *                  description: Edited the role successfully
  *
  */
