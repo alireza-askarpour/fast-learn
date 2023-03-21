@@ -10,6 +10,7 @@ import episodesRoutes from './episodes.routes.js'
 import blogsRoutes from './blogs.routes.js'
 import usersRoutes from './users.routes.js'
 import permissionsRoutes from './permissions.routes.js'
+import rolesRoutes from './roles.routes.js'
 import homeRoutes from './home.routes.js'
 
 const router = express.Router()
@@ -22,6 +23,7 @@ router.use('/episodes', verifyAccessToken, episodesRoutes)
 router.use('/blogs', verifyAccessToken, blogsRoutes)
 router.use('/users', verifyAccessToken, usersRoutes)
 router.use('/permissions', verifyAccessToken, permissionsRoutes)
+router.use('/roles', verifyAccessToken, rolesRoutes)
 router.use(homeRoutes)
 
 export default router
