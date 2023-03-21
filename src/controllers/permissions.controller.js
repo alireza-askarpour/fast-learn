@@ -76,6 +76,30 @@ export const updatePermission = async (req, res, next) => {
 }
 
 /**
+ * Remove permission by ID
+ */
+export const removePermission = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const { _id } = await findPermissionByID(id)
+
+    const removePermissionResult = await PermissionModel.deleteOne({ _id })
+
+    if (!removePermissionResult.deletedCount) {
+      throw createHttpError.InternalServerError('The permission was not Removed')
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      message: 'Permission was successfully removed',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
  * find permission by ID
  */
 const findPermissionByID = async id => {

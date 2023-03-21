@@ -95,3 +95,23 @@
  *             500:
  *                description: Internal server error
  */
+
+/**
+ * @swagger
+ *    /permissions/remove/{id}:
+ *       delete:
+ *          tags: [RBAC(Admin-Panel)]
+ *          summary: remove permissions by ID
+ *          parameters:
+ *             -  in: path
+ *                name: id
+ *                type: string
+ *                required: true
+ *          responses:
+ *             200:
+ *                description: success
+ *             401:
+ *                description: Unauthorized
+ *             500:
+ *                description: Internal server error
+ */
