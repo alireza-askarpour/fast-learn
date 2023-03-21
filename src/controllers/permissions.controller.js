@@ -1,8 +1,10 @@
 import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
+import { ObjectIdValidator } from '../validations/public.validation.js'
+import { createPermissionSchema, updatePermissionSchema } from '../validations/RBAC.validation.js'
+
 import PermissionModel from '../models/permission.models.js'
-import { createPermissionSchema } from '../validations/RBAC.validation.js'
 
 /**
  * Get all permissions
@@ -46,4 +48,41 @@ export const createPermission = async (req, res, next) => {
   } catch (err) {
     next(err)
   }
+}
+
+/**
+ * Update permission by ID
+ */
+export const updatePermission = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const { _id } = await findPermissionByID(id)
+    const permissionDataBody = await updatePermissionSchema.validateAsync(req.body)
+
+    const updatePermissionResult = await PermissionModel.updateOne({ _id }, { $set: permissionDataBody })
+
+    if (!updatePermissionResult.modifiedCount) {
+      throw createHttpError.InternalServerError('The permission was not edited')
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      success: true,
+      message: 'Permission was successfully updated',
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
+ * find permission by ID
+ */
+const findPermissionByID = async id => {
+  const { id: permissionId } = await ObjectIdValidator.validateAsync({ id })
+
+  const permission = await PermissionModel.findById(permissionId)
+  if (!permission) throw createHttpError.NotFound('Permission not found')
+
+  return permission
 }
