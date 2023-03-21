@@ -50,13 +50,17 @@ export const getCourse = async (req, res, next) => {
 export const createCourse = async (req, res, next) => {
   try {
     const courseDataBody = await createCourseSchema.validateAsync(req.body)
-    const { type, price } = courseDataBody
+    const { type, price, discount, slug } = courseDataBody
 
     const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
     const teacher = req.user._id
 
-    if (type === 'free' && +price > 0)
-      throw createHttpError.BadRequest('No price can be registered for the free course')
+    if (type === 'free' && (+price > 0 || +discount > 0)) {
+      throw createHttpError.BadRequest('No price or discount can be registered for the free course')
+    }
+
+    const existSlug = await CourseModel.findOne({ slug })
+    if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
 
     const course = {
       ...courseDataBody,
@@ -95,6 +99,14 @@ export const updateCourse = async (req, res, next) => {
     }
 
     const courseDataBody = await updateCourseSchema.validateAsync(req.body)
+    const { type, price, discount, slug } = courseDataBody
+
+    if (type === 'free' && (+price > 0 || +discount > 0)) {
+      throw createHttpError.BadRequest('No price or discount can be registered for the free course')
+    }
+
+    const existSlug = await CourseModel.findOne({ slug })
+    if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
 
     if (req?.file) {
       const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
