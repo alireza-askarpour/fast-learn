@@ -41,7 +41,7 @@ function videoFilter(req, file, cb) {
   if (mimetypes.includes(ext)) {
     return cb(null, true)
   }
-  return cb(createError.BadRequest('The format of the video sent is not correct.'))
+  return cb(createHttpError.BadRequest('The format of the video sent is not correct.'))
 }
 
 const pictureMaxSize = 1 * 1000 * 1000 // 1MB

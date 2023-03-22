@@ -14,6 +14,9 @@
  *                value:
  *                   type: string
  *                   description: value of category
+ *                parent:
+ *                   type: string
+ *                   description: parent ID
  */
 
 /**
@@ -29,6 +32,9 @@
  *                value:
  *                   type: string
  *                   description: value of category
+ *                parent:
+ *                   type: string
+ *                   description: parent ID
  */
 
 /**
@@ -73,7 +79,7 @@
  *    /categories/update/{id}:
  *       put:
  *          tags: [Categories(Admin-Panel)]
- *          summary: edit category by id
+ *          summary: edit category by ID
  *          parameters:
  *             -  in: path
  *                name: id

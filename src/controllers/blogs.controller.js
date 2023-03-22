@@ -69,7 +69,7 @@ export const updateBlog = async (req, res, next) => {
     }
 
     const updateResult = await BlogModel.updateOne({ _id: id }, { $set: blogDataBody })
-    if (updateResult.modifiedCount == 0) throw createError.InternalServerError('Update failed')
+    if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError('Update failed')
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -91,7 +91,7 @@ export const removeBlog = async (req, res, next) => {
     await findBlogById(id)
 
     const result = await BlogModel.deleteOne({ _id: id })
-    if (result.deletedCount == 0) throw createError.InternalServerError('Delete failed')
+    if (result.deletedCount == 0) throw createHttpError.InternalServerError('Delete failed')
 
     res.status(StatusCodes.OK).json({
       statusCode: StatusCodes.OK,

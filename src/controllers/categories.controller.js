@@ -2,11 +2,12 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import CategoryModel from '../models/category.model.js'
-import { categorySchema } from '../validations/category.validation.js'
+import { createCategorySchema, updateCategorySchema } from '../validations/category.validation.js'
+import { ObjectIdValidator } from '../validations/public.validation.js'
 
 export const getAllCategories = async (req, res, next) => {
   try {
-    const categories = await CategoryModel.find()
+    const categories = await CategoryModel.find({ parent: undefined })
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -18,15 +19,17 @@ export const getAllCategories = async (req, res, next) => {
   }
 }
 
+/**
+ * Create new category
+ */
 export const createCategory = async (req, res, next) => {
-  const { name, value } = req.body
   try {
-    await categorySchema.validateAsync(req.body)
+    const { name, value, disabled, parent } = await createCategorySchema.validateAsync(req.body)
 
     const existCategory = await CategoryModel.findOne({ name })
     if (existCategory) throw createHttpError.BadRequest('Category already exists')
 
-    const newCategory = await CategoryModel.create({ name, value })
+    const newCategory = await CategoryModel.create({ name, value, disabled, parent })
     if (!newCategory) throw createHttpError.InternalServerError('Category not created')
 
     res.status(StatusCodes.CREATED).json({
@@ -39,17 +42,26 @@ export const createCategory = async (req, res, next) => {
   }
 }
 
+/**
+ * Update category by ID
+ */
 export const updateCategory = async (req, res, next) => {
   const { id } = req.params
-  const { name, value } = req.body
   try {
-    await categorySchema.validateAsync(req.body)
+    const { _id } = await checkExistCategory(id)
 
-    const existCategory = await CategoryModel.findOne({ $or: [{ name }, { value }] })
+    const categoryDataBody = await updateCategorySchema.validateAsync(req.body)
+    const { name, value } = categoryDataBody
+
+    const existCategory = await CategoryModel.findOne({
+      $or: [{ name }, { value }],
+    })
     if (existCategory) throw createHttpError.BadRequest('Category already exists')
 
-    const category = { name, value }
-    const updatedResult = await CategoryModel.findByIdAndUpdate(id, category)
+    const updatedResult = await CategoryModel.updateOne({ _id }, { $set: categoryDataBody })
+    if (updatedResult.modifiedCount == 0) {
+      throw createHttpError.InternalServerError('Update failed')
+    }
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -61,14 +73,18 @@ export const updateCategory = async (req, res, next) => {
   }
 }
 
-export const deleteCategory = async (req, res, next) => {
+/**
+ * Remove category by ID
+ */
+export const removeCategory = async (req, res, next) => {
   const { id } = req.params
   try {
-    const existCategory = await CategoryModel.findById(id)
-    if (!existCategory) throw createHttpError.NotFound('Category not found')
+    const { _id } = await checkExistCategory(id)
 
-    const deleteCategory = await CategoryModel.deleteOne({ _id: id })
-    if (!deleteCategory.deletedCount === 0) throw createHttpError.InternalServerError('The category was not deleted')
+    const deletedCategory = await CategoryModel.deleteOne({ _id })
+    if (!deletedCategory.deletedCount === 0) {
+      throw createHttpError.InternalServerError('The category was not deleted')
+    }
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -78,4 +94,11 @@ export const deleteCategory = async (req, res, next) => {
   } catch (err) {
     next(err)
   }
+}
+
+const checkExistCategory = async categoryId => {
+  const { id } = await ObjectIdValidator.validateAsync({ id: categoryId })
+  const category = await CategoryModel.findById(id)
+  if (!category) throw createHttpError.NotFound('Category not found')
+  return category
 }
