@@ -4,16 +4,15 @@ const CategorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     value: { type: String, required: true },
-    subcategories: [
-      {
-        name: { type: String, required: true },
-        value: { type: String, required: true },
-        disabled: { type: Boolean, default: false },
-      },
-    ],
+    disabled: { type: Boolean, default: false },
+    parent: { type: mongoose.Types.ObjectId, default: undefined, ref: 'category' },
   },
   {
-    versionKey: false,
+    id: false,
+    toJSON: {
+      versionKey: false,
+      virtuals: true,
+    },
   }
 )
 
