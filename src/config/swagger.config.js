@@ -8,7 +8,7 @@ export const swaggerSetup = swaggerUI.setup(
       info: {
         title: 'FastLearn',
         version: '1.0.0',
-        description: 'The online web development learning website.',
+        description: 'The online learning application built using Node.js, Express, Mongoose',
         contact: {
           name: 'Alireza Askarpour',
           email: 'askarpourdev@gmail.com',

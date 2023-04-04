@@ -54,7 +54,7 @@
 
 /**
  * @swagger
- *    /blogs/create:
+ *    /blogs:
  *       post:
  *          tags: [Blogs(Admin-Panel)]
  *          summary: create new blog
@@ -71,7 +71,7 @@
 
 /**
  * @swagger
- *    /blogs/update/{id}:
+ *    /blogs/{id}:
  *       patch:
  *          tags: [Blogs(Admin-Panel)]
  *          summary: update blog by ID
@@ -93,7 +93,7 @@
 
 /**
  * @swagger
- *    /blogs/remove/{id}:
+ *    /blogs/{id}:
  *       delete:
  *          tags: [Blogs(Admin-Panel)]
  *          summary: Remove blog by ID
@@ -125,7 +125,7 @@
 
 /**
  * @swagger
- *    /blogs/list:
+ *    /blogs:
  *       get:
  *          tags: [Blogs(Admin-Panel)]
  *          summary: Get blogs List

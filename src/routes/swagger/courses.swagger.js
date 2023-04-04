@@ -124,7 +124,7 @@
 
 /**
  * @swagger
- *    /courses/list:
+ *    /courses:
  *       get:
  *          tags: [Courses(Admin-Panel)]
  *          summary: get all courses
@@ -160,7 +160,7 @@
 
 /**
  * @swagger
- * /courses/create:
+ * /courses:
  *    post:
  *       tags: [Courses(Admin-Panel)]
  *       summary: create and save courses
@@ -177,7 +177,7 @@
 
 /**
  * @swagger
- *    /courses/update/{id}:
+ *    /courses/{id}:
  *       patch:
  *          tags: [Courses(Admin-Panel)]
  *          summary: update one course by id

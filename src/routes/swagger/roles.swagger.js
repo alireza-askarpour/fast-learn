@@ -33,7 +33,7 @@
 
 /**
  * @swagger
- *    /roles/list:
+ *    /roles:
  *       get:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: get all roles
@@ -48,7 +48,7 @@
 
 /**
  * @swagger
- *  /roles/create:
+ *  /roles:
  *      post:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: create new role
@@ -66,7 +66,7 @@
 
 /**
  * @swagger
- *  /roles/update/{id}:
+ *  /roles/{id}:
  *      patch:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: edit role by ID
@@ -89,7 +89,7 @@
 
 /**
  * @swagger
- *  /roles/remove/{field}:
+ *  /roles/{field}:
  *      delete:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: remove role by ID or Title

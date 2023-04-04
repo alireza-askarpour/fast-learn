@@ -30,7 +30,7 @@
 
 /**
  * @swagger
- *    /permissions/list:
+ *    /permissions:
  *       get:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: get all permissions
@@ -45,7 +45,7 @@
 
 /**
  * @swagger
- *    /permissions/create:
+ *    /permissions/:
  *       post:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: create new permissions
@@ -69,7 +69,7 @@
 
 /**
  * @swagger
- *    /permissions/update/{id}:
+ *    /permissions/{id}:
  *       patch:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: update permissions by ID
@@ -98,7 +98,7 @@
 
 /**
  * @swagger
- *    /permissions/remove/{id}:
+ *    /permissions/{id}:
  *       delete:
  *          tags: [RBAC(Admin-Panel)]
  *          summary: remove permissions by ID

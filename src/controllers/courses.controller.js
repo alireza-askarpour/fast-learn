@@ -77,7 +77,6 @@ export const createCourse = async (req, res, next) => {
       status: StatusCodes.CREATED,
       success: true,
       message: 'Course created successfully',
-      course,
     })
   } catch (err) {
     if (req?.file) {

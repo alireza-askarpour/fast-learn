@@ -39,7 +39,7 @@
 
 /**
  * @swagger
- *    /categories/list:
+ *    /categories:
  *       get:
  *          tags: [Categories(Admin-Panel)]
  *          summary: get all categories
@@ -50,7 +50,7 @@
 
 /**
  * @swagger
- *    /categories/create:
+ *    /categories:
  *       post:
  *          tags: [Categories(Admin-Panel)]
  *          summary: create new category
@@ -76,7 +76,7 @@
 
 /**
  * @swagger
- *    /categories/update/{id}:
+ *    /categories/{id}:
  *       put:
  *          tags: [Categories(Admin-Panel)]
  *          summary: edit category by ID
@@ -102,7 +102,7 @@
 
 /**
  * @swagger
- *    /categories/remove/{id}:
+ *    /categories/{id}:
  *       delete:
  *          tags: [Categories(Admin-Panel)]
  *          summary: remove category by ID

@@ -70,7 +70,7 @@
 
 /**
  * @swagger
- *  /episodes/create:
+ *  /episodes:
  *      post:
  *          tags: [Episodes(Admin-Panel)]
  *          summary: create new Chapter for courses
@@ -91,7 +91,7 @@
 
 /**
  * @swagger
- *  /episodes/update/{episodeId}:
+ *  /episodes/{episodeId}:
  *      patch:
  *          tags: [Episodes(Admin-Panel)]
  *          summary: edit episode of chapter
@@ -117,7 +117,7 @@
 
 /**
  * @swagger
- *  /episodes/remove/{episodeId}:
+ *  /episodes/{episodeId}:
  *      delete:
  *          tags: [Episodes(Admin-Panel)]
  *          summary: remove episode by episode ID

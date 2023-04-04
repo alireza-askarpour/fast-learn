@@ -7,9 +7,9 @@ import { getCourses, getCourse, createCourse, updateCourse } from '../controller
 
 const router = express.Router()
 
-router.get('/list', getCourses)
+router.get('/', getCourses)
 router.get('/:slug', getCourse)
-router.post('/create', uploadCourseThumbnail.single('thumbnail'), stringToArray('tags'), createCourse)
-router.patch('/update/:id', uploadCourseThumbnail.single('thumbnail'), updateCourse)
+router.post('/', uploadCourseThumbnail.single('thumbnail'), stringToArray('tags'), createCourse)
+router.patch('/:id', uploadCourseThumbnail.single('thumbnail'), updateCourse)
 
 export default router

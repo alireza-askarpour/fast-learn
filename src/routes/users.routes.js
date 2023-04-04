@@ -4,8 +4,8 @@ import { getUser, getUsers, removeUser } from '../controllers/users.controller.j
 
 const router = express.Router()
 
-router.get('/list', getUsers)
+router.get('/', getUsers)
 router.get('/:id', getUser)
-router.delete('/remove/:id', removeUser)
+router.delete('/:id', removeUser)
 
 export default router

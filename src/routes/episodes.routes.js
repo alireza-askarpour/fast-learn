@@ -6,8 +6,8 @@ import { createEpisode, updateEpisode, removeEpisode } from '../controllers/epis
 
 const router = express.Router()
 
-router.post('/create', uploadEpisodeVideo.single('video'), createEpisode)
-router.patch('/update/:episodeId', uploadEpisodeVideo.single('video'), updateEpisode)
-router.delete('/remove/:episodeId', removeEpisode)
+router.post('/', uploadEpisodeVideo.single('video'), createEpisode)
+router.patch('/:episodeId', uploadEpisodeVideo.single('video'), updateEpisode)
+router.delete('/:episodeId', removeEpisode)
 
 export default router

@@ -5,9 +5,9 @@ import { stringToArray } from '../middlewares/string-to-array.middleware.js'
 
 const router = express.Router()
 
-router.get('/list', getRoles)
-router.post('/create', stringToArray('permissions'), createRole)
-router.patch('/update/:id', updateRole)
-router.delete('/remove/:field', removeRole)
+router.get('/', getRoles)
+router.post('/', stringToArray('permissions'), createRole)
+router.patch('/:id', updateRole)
+router.delete('/:field', removeRole)
 
 export default router

@@ -9,9 +9,9 @@ import {
 
 const router = express.Router()
 
-router.get('/list', getPermissions)
-router.post('/create', createPermission)
-router.patch('/update/:id', updatePermission)
-router.delete('/remove/:id', removePermission)
+router.get('/', getPermissions)
+router.post('/', createPermission)
+router.patch('/:id', updatePermission)
+router.delete('/:id', removePermission)
 
 export default router
