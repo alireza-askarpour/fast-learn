@@ -1,6 +1,6 @@
 # Fastlearn Backend
 
-The store application built using Node.js, Express, Mongoose
+The online learning application built using Node.js, Express, Mongoose
 
 
 ## Index
