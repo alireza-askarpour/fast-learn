@@ -12,9 +12,9 @@ const BlogSchema = mongoose.Schema(
     views: { type: Number, default: 0 },
     tags: { type: [String], default: [] },
     reading_time: { type: Object, required: true },
-    likes: [{ type: mongoose.Types.ObjectId, ref: 'user' }],
-    deslikes: [{ type: mongoose.Types.ObjectId, ref: 'user' }],
-    bookmark: [{ type: mongoose.Types.ObjectId, ref: 'user' }],
+    likes: { type: [mongoose.Types.ObjectId], ref: 'user', default: [] },
+    deslikes: { type: mongoose.Types.ObjectId, ref: 'user', default: [] },
+    bookmark: { type: mongoose.Types.ObjectId, ref: 'user', default: [] },
     comments: [{ type: mongoose.Types.ObjectId, ref: 'comment' }],
   },
   {
