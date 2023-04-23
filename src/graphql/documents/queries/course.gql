@@ -19,13 +19,13 @@ query {
       _id
     }
     comments
-    like {
+    likes {
       _id
     }
-    deslike {
+    deslikes {
       _id
     }
-    bookmark {
+    bookmarks {
       _id
     }
     chapters {
