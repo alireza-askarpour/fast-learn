@@ -37,3 +37,31 @@ export const LikeBlog = {
   },
 }
 
+export const LikeCourse = {
+  type: ResponseType,
+  args: {
+    coueseID: { type: GraphQLString },
+  },
+  resolve: async (_, args, context) => {
+    const { req } = context
+    const { coueseID } = args
+    const user = await verifyAccessTokenInGraphQL(req)
+
+    await checkExistCourse(coueseID)
+    const likedCourse = await CourseModel.findOne({
+      _id: coueseID,
+      likes: user._id,
+    })
+    const updateQuery = likedCourse ? { $pull: { likes: user._id } } : { $push: { likes: user._id } }
+    await CourseModel.updateOne({ _id: coueseID }, updateQuery)
+
+    const message = likedCourse ? 'unliked' : 'liked'
+
+    return {
+      statusCode: StatusCodes.OK,
+      data: {
+        message,
+      },
+    }
+  },
+}
