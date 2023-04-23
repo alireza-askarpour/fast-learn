@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLScalarType, GraphQLString } from 'graphql'
+import { GraphQLBoolean, GraphQLObjectType, GraphQLScalarType, GraphQLString } from 'graphql'
 import { toObject, parseLiteral } from '../utils.js'
 
 export const AnyType = new GraphQLScalarType({
@@ -21,7 +21,9 @@ export const PublicCategoryType = new GraphQLObjectType({
   name: 'PublicCategoryType',
   fields: {
     _id: { type: GraphQLString },
-    title: { type: GraphQLString },
+    value: { type: GraphQLString },
+    disabled: { type: GraphQLBoolean },
+    parent: { type: GraphQLString },
   },
 })
 

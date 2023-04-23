@@ -11,9 +11,10 @@ export const BlogResolver = {
   resolve: async (_, args) => {
     const { category } = args
     const findQuery = category ? { category } : {}
-    const test = await BlogModel.find(findQuery).populate([{
-      path: 'author'
-    }])
-    return test
+    return await BlogModel.find(findQuery).populate([
+      {
+        path: 'author',
+      },
+    ])
   },
 }

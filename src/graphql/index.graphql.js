@@ -1,10 +1,13 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
+
 import { BlogResolver } from './queries/blog.resolver.js'
+import { CourseResolver } from './queries/course.resolver.js'
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
   fields: {
     blogs: BlogResolver,
+    courses: CourseResolver,
   },
 })
 
