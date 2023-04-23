@@ -2,6 +2,7 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 
 import { BlogResolver } from './queries/blog.resolver.js'
 import { CourseResolver } from './queries/course.resolver.js'
+import { getBookmarkedCourses } from './queries/user-profile.resolver.js'
 
 import { BookmarkBlog, BookmarkCourse } from './mutations/booksmarks.resolver.js'
 
@@ -10,6 +11,7 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     blogs: BlogResolver,
     courses: CourseResolver,
+    getBookmarkedCourses,
   },
 })
 

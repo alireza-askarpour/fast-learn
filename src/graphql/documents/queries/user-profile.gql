@@ -1,0 +1,43 @@
+query {
+  courses {
+    _id
+    title
+    description
+    slug
+    thumbnail
+    price
+    discount
+    tags
+    type
+    teacher {
+      _id
+    }
+    status
+    level
+    short_link
+    category {
+      _id
+    }
+    comments
+    likes {
+      _id
+    }
+    deslikes {
+      _id
+    }
+    bookmarks {
+      _id
+    }
+    chapters {
+      title
+      description
+      episodes {
+        title
+        description
+        type
+        time
+        videoAddress
+      }
+    }
+  }
+}

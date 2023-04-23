@@ -4,3 +4,10 @@ mutation {
     data
   }
 }
+
+mutation {
+  BookmarkCourse(courseID: "6412ccd257e06c4757efeb22") {
+    statusCode
+    data
+  }
+}

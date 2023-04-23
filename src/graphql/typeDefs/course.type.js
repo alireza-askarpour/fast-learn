@@ -39,9 +39,9 @@ export const CourseType = new GraphQLObjectType({
     short_link: { type: GraphQLString },
     category: { type: PublicCategoryType },
     comments: { type: AnyType },
-    like: { type: new GraphQLList(UserType) },
-    deslike: { type: new GraphQLList(UserType) },
-    bookmark: { type: new GraphQLList(UserType) },
+    likes: { type: new GraphQLList(UserType) },
+    deslikes: { type: new GraphQLList(UserType) },
+    bookmarks: { type: new GraphQLList(UserType) },
     chapters: { type: new GraphQLList(ChaptersType) },
   },
 })

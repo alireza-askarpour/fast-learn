@@ -1,0 +1,25 @@
+query {
+  courses {
+    _id
+    title
+    description
+    content
+    author
+    thumbnail
+    slug
+    short_link
+    views
+    tags
+    reading_time
+    comments
+    likes {
+      _id
+    }
+    likes {
+      _id
+    }
+    deslikes {
+      _id
+    }
+  }
+}
