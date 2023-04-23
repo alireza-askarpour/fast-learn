@@ -1,0 +1,13 @@
+mutation {
+  LikeBlog(coueseID: "6412ccd257e06c4757efeb22") {
+  	statusCode
+    data
+  }
+}
+
+mutation {
+  LikeCourse(coueseID: "6412ccd257e06c4757efeb22") {
+  	statusCode
+    data
+  }
+}
