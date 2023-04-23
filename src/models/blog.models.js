@@ -14,7 +14,7 @@ const BlogSchema = mongoose.Schema(
     reading_time: { type: Object, required: true },
     likes: { type: [mongoose.Types.ObjectId], ref: 'user', default: [] },
     deslikes: { type: mongoose.Types.ObjectId, ref: 'user', default: [] },
-    bookmark: { type: mongoose.Types.ObjectId, ref: 'user', default: [] },
+    bookmarks: { type: mongoose.Types.ObjectId, ref: 'user', default: [] },
     comments: [{ type: mongoose.Types.ObjectId, ref: 'comment' }],
   },
   {

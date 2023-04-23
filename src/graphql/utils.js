@@ -1,4 +1,6 @@
 import { Kind } from 'graphql'
+import BlogModel from '../models/blog.models.js'
+import createHttpError from 'http-errors'
 
 export function parseObject(valueNode) {
   const value = Object.create(null)
@@ -44,4 +46,10 @@ export function toObject(value) {
     return JSON.parse(value)
   }
   return null
+}
+
+export const checkExistBlog = async id => {
+  const blog = await BlogModel.findById(id)
+  if (!blog) throw createHttpError.NotFound('No blog was found with this specification')
+  return blog
 }

@@ -31,11 +31,9 @@ export const verifyAccessToken = (req, res, next) => {
 
 export const verifyAccessTokenInGraphQL = async req => {
   try {
-    if (!req.headers?.authorization) {
-      return next(createHttpError.Unauthorized())
-    }
+    if (!req.headers?.authorization) return next(createHttpError.Unauthorized())
 
-    const [bearer, token] = headers?.authorization?.split(' ') || []
+    const [bearer, token] = req.headers?.authorization?.split(' ') || []
     const validData = ['Bearer', 'bearer']
     if (!token || !validData.includes(bearer)) throw createHttpError.Unauthorized()
 
