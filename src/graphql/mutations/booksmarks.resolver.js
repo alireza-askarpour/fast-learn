@@ -24,7 +24,7 @@ export const BookmarkBlog = {
       bookmarks: user._id,
     })
     const updateQuery = bookmarkedBlog ? { $pull: { bookmarks: user._id } } : { $push: { bookmarks: user._id } }
-    const res = await BlogModel.updateOne({ _id: blogID }, updateQuery)
+    await BlogModel.updateOne({ _id: blogID }, updateQuery)
 
     const message = bookmarkedBlog
       ? 'The article was removed from the favorites list'

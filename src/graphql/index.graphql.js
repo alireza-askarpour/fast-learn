@@ -4,6 +4,7 @@ import { BlogResolver } from './queries/blog.resolver.js'
 import { CourseResolver } from './queries/course.resolver.js'
 import { getBookmarkedBlog, getBookmarkedCourse } from './queries/user-profile.resolver.js'
 
+import { LikeBlog } from './mutations/likes.resolver.js'
 import { BookmarkBlog, BookmarkCourse } from './mutations/booksmarks.resolver.js'
 
 const RootQuery = new GraphQLObjectType({
@@ -21,6 +22,7 @@ const RootMutation = new GraphQLObjectType({
   fields: {
     BookmarkBlog,
     BookmarkCourse,
+    LikeBlog,
   },
 })
 
