@@ -28,3 +28,22 @@ export const verifyAccessToken = (req, res, next) => {
     next(err)
   }
 }
+
+export const verifyAccessTokenInGraphQL = async req => {
+  try {
+    if (!req.headers?.authorization) {
+      return next(createHttpError.Unauthorized())
+    }
+
+    const [bearer, token] = headers?.authorization?.split(' ') || []
+    const validData = ['Bearer', 'bearer']
+    if (!token || !validData.includes(bearer)) throw createHttpError.Unauthorized()
+
+    const { mobile } = JWT.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+    const user = await UserModels.findOne({ mobile }, { password: 0, otp: 0 })
+    if (!user) throw createHttpError.Unauthorized()
+    return user
+  } catch (error) {
+    throw createHttpError.Unauthorized()
+  }
+}
