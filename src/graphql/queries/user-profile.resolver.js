@@ -10,9 +10,8 @@ export const getBookmarkedCourses = {
     const { req } = context
     const user = await verifyAccessTokenInGraphQL(req)
     const courses = await CourseModel.find({ bookmarks: user._id }).populate([
-      { path: 'teacher' },
       { path: 'category' },
-      { path: 'bookmarks' },
+      { path: 'teacher' },
     ])
     return courses
   },

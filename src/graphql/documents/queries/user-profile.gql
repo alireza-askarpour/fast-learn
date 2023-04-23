@@ -1,43 +1,26 @@
 query {
-  courses {
+  getBookmarkedCourses {
     _id
     title
     description
-    slug
+    content
+    author {
+      _id
+    }
     thumbnail
-    price
-    discount
-    tags
-    type
-    teacher {
-      _id
-    }
-    status
-    level
+    slug
     short_link
-    category {
-      _id
+    views
+    tags
+    reading_time
+    likes {
+       _id
     }
-    comments
     likes {
       _id
     }
     deslikes {
       _id
-    }
-    bookmarks {
-      _id
-    }
-    chapters {
-      title
-      description
-      episodes {
-        title
-        description
-        type
-        time
-        videoAddress
-      }
     }
   }
 }
