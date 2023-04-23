@@ -1,0 +1,6 @@
+mutation {
+  BookmarkBlog(blogID: "64185b4ac2da05110733cbfd") {
+    statusCode
+    data
+  }
+}

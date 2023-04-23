@@ -38,9 +38,9 @@ const CourseSchema = new mongoose.Schema(
     short_link: { type: String },
     category: { type: mongoose.Types.ObjectId, ref: 'category', required: true },
     comments: { type: [CommentSchema], default: [] },
-    like: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
-    deslike: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
-    bookmark: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
+    likes: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
+    deslikes: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
+    bookmarks: { type: [mongoose.Types.ObjectId], ref: 'users', default: [] },
     chapters: { type: [ChapterSchema], default: [] },
   },
   {
