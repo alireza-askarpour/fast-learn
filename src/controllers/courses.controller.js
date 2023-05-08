@@ -2,6 +2,8 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import CourseModel from '../models/course.models.js'
+import CategoryModel from '../models/category.model.js'
+
 import { deleteFile } from '../utils/file-system.utils.js'
 import { createCourseSchema, updateCourseSchema } from '../validations/course.validation.js'
 import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
@@ -51,7 +53,7 @@ export const createCourse = async (req, res, next) => {
   try {
     if (!req?.body?.tags) req.body.tags = []
     const courseDataBody = await createCourseSchema.validateAsync(req.body)
-    const { type, price, discount, slug } = courseDataBody
+    const { type, price, discount, slug, category } = courseDataBody
 
     const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
     const teacher = req.user._id
@@ -62,6 +64,8 @@ export const createCourse = async (req, res, next) => {
 
     const existSlug = await CourseModel.findOne({ slug })
     if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
+
+    await checkExistsCategory(category)
 
     const course = {
       ...courseDataBody,
@@ -95,7 +99,7 @@ export const updateCourse = async (req, res, next) => {
 
     if (!req?.body?.tags) req.body.tags = []
     const courseDataBody = await updateCourseSchema.validateAsync(req.body)
-    const { type, price, discount, slug } = courseDataBody
+    const { type, price, discount, slug, category } = courseDataBody
 
     if (type === 'free' && (+price > 0 || +discount > 0)) {
       throw createHttpError.BadRequest('No price or discount can be registered for the free course')
@@ -103,6 +107,8 @@ export const updateCourse = async (req, res, next) => {
 
     const existSlug = await CourseModel.findOne({ slug })
     if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
+
+    await checkExistsCategory(category)
 
     if (req?.file) {
       const thumbnailPath = req?.file?.path?.replace(/\\/g, '/')
@@ -139,4 +145,11 @@ const findCourseBySlug = async slug => {
   const course = await CourseModel.findOne({ slug })
   if (!course) throw createHttpError.NotFound('Not found course')
   return course
+}
+
+const checkExistsCategory = async categoryId => {
+  const { id } = await ObjectIdValidator.validateAsync({ id: categoryId })
+  const category = await CategoryModel.findById(id)
+  if (!category) throw createHttpError.NotFound('CATEGORY_NOT_EXISRS')
+  return category
 }
