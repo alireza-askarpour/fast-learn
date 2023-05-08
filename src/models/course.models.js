@@ -10,7 +10,7 @@ const EpisodeSchema = new mongoose.Schema(
     time: { type: String, required: true },
     videoAddress: { type: String, required: true },
   },
-  { versionKey: false, toJSON: { virtuals: true }, timestamps: true }
+  { versionKey: false, toJSON: { virtuals: true }, timestamps: true, id: false }
 )
 
 const ChapterSchema = new mongoose.Schema(
@@ -46,6 +46,7 @@ const CourseSchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
+    id: false,
     toJSON: {
       virtuals: true,
     },

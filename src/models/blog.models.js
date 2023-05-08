@@ -13,13 +13,14 @@ const BlogSchema = mongoose.Schema(
     tags: { type: [String], default: [] },
     reading_time: { type: Object, required: true },
     likes: { type: [mongoose.Types.ObjectId], ref: 'user', default: [] },
-    deslikes: { type: mongoose.Types.ObjectId, ref: 'user', default: [] },
-    bookmarks: { type: mongoose.Types.ObjectId, ref: 'user', default: [] },
-    comments: [{ type: mongoose.Types.ObjectId, ref: 'comment' }],
+    deslikes: { type: [mongoose.Types.ObjectId], ref: 'user', default: [] },
+    bookmarks: { type: [mongoose.Types.ObjectId], ref: 'user', default: [] },
+    comments: { type: [mongoose.Types.ObjectId], ref: 'comment' },
   },
   {
     timestamps: true,
     versionKey: false,
+    id: false,
     toJSON: {
       virtuals: true,
     },

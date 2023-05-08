@@ -7,6 +7,7 @@ const RoleSchema = new mongoose.Schema(
     permissions: { type: [mongoose.Types.ObjectId], ref: 'permission', default: [] },
   },
   {
+    id: false,
     versionKey: false,
     toJSON: {
       virtuals: true,

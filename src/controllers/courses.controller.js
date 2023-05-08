@@ -49,6 +49,7 @@ export const getCourse = async (req, res, next) => {
 
 export const createCourse = async (req, res, next) => {
   try {
+    if (!req?.body?.tags) req.body.tags = []
     const courseDataBody = await createCourseSchema.validateAsync(req.body)
     const { type, price, discount, slug } = courseDataBody
 
@@ -92,11 +93,7 @@ export const updateCourse = async (req, res, next) => {
   try {
     const course = await findCourseById(id)
 
-    if (req?.body?.tags) {
-      const tags = req.body.tags.split(',')
-      req.body.tags = tags
-    }
-
+    if (!req?.body?.tags) req.body.tags = []
     const courseDataBody = await updateCourseSchema.validateAsync(req.body)
     const { type, price, discount, slug } = courseDataBody
 

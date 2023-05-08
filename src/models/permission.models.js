@@ -6,6 +6,7 @@ const PermissionSchema = new mongoose.Schema(
     description: { type: String, default: '' },
   },
   {
+    id: false,
     versionKey: false,
     toJSON: {
       virtuals: true,

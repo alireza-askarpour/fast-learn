@@ -31,6 +31,7 @@ export const getRoles = async (req, res, next) => {
  */
 export const createRole = async (req, res, next) => {
   try {
+    if (!req?.body?.permissions) req.body.permissions = []
     const { title, description, permissions } = await createRoleSchema.validateAsync(req.body)
 
     const role = await RoleModel.findOne({ title })
@@ -57,11 +58,7 @@ export const updateRole = async (req, res, next) => {
   try {
     const { _id } = await findRoleWithIdOrTitle(id)
 
-    if (req?.body?.permissions) {
-      const permissions = req.body.permissions.split(',')
-      req.body.permissions = permissions
-    }
-
+    if (!req?.body?.permissions) req.body.permissions = []
     const roleDataBody = await updateRoleSchema.validateAsync(req.body)
 
     const updateRoleResult = await RoleModel.updateOne({ _id }, { $set: roleDataBody })

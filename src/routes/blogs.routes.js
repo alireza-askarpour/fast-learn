@@ -9,7 +9,7 @@ const router = express.Router()
 router.get('/', getBlogs)
 router.get('/:slug', getBlog)
 router.post('/', uploadCourseThumbnail.single('thumbnail'), stringToArray('tags'), createBlog)
-router.patch('/:id', uploadCourseThumbnail.single('thumbnail'), updateBlog)
+router.patch('/:id', uploadCourseThumbnail.single('thumbnail'), stringToArray('tags'), updateBlog)
 router.delete('/:id', removeBlog)
 
 export default router

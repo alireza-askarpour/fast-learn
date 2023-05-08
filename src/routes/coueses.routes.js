@@ -10,6 +10,6 @@ const router = express.Router()
 router.get('/', getCourses)
 router.get('/:slug', getCourse)
 router.post('/', uploadCourseThumbnail.single('thumbnail'), stringToArray('tags'), createCourse)
-router.patch('/:id', uploadCourseThumbnail.single('thumbnail'), updateCourse)
+router.patch('/:id', uploadCourseThumbnail.single('thumbnail'), stringToArray('tags'), updateCourse)
 
 export default router

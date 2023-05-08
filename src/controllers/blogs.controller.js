@@ -13,6 +13,7 @@ import { deleteFile } from '../utils/file-system.utils.js'
 
 export const createBlog = async (req, res, next) => {
   try {
+    if (!req?.body?.tags) req.body.tags = []
     const { title, description, content, slug, tags } = await createBlogSchema.validateAsync(req.body)
 
     const thumbnail = req?.file?.path?.replace(/\\/g, '/')
@@ -55,11 +56,7 @@ export const updateBlog = async (req, res, next) => {
   try {
     const blog = await findBlogById(id)
 
-    if (req?.body?.tags) {
-      const tags = req.body.tags.split(',')
-      req.body.tags = tags
-    }
-
+    if (!req?.body?.tags) req.body.tags = []
     const blogDataBody = await updateBlogSchema.validateAsync(req.body)
 
     if (req?.file) {

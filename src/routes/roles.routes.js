@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get('/', getRoles)
 router.post('/', stringToArray('permissions'), createRole)
-router.patch('/:id', updateRole)
+router.patch('/:id', stringToArray('permissions'), updateRole)
 router.delete('/:field', removeRole)
 
 export default router
