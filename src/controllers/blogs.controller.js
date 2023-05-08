@@ -3,6 +3,7 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import BlogModel from '../models/blog.models.js'
+import CategoryModel from '../models/category.model.js'
 
 import { createBlogSchema, updateBlogSchema } from '../validations/blog.validation.js'
 import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
@@ -21,6 +22,8 @@ export const createBlog = async (req, res, next) => {
 
     const existSlug = await BlogModel.findOne({ slug })
     if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
+
+    await checkExistsCategory(category)
 
     const newBlog = {
       title,
@@ -65,6 +68,8 @@ export const updateBlog = async (req, res, next) => {
       blogDataBody.thumbnail = thumbnailPath
       deleteFile(blog.thumbnail)
     }
+
+    await checkExistsCategory(blogDataBody.category)
 
     const updateResult = await BlogModel.updateOne({ _id: id }, { $set: blogDataBody })
     if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError('Update failed')
@@ -145,4 +150,11 @@ const findBlogBySlug = async blogSlug => {
   const blog = await BlogModel.findOne({ slug })
   if (!blog) throw createHttpError.NotFound('Not found blog')
   return blog
+}
+
+const checkExistsCategory = async categoryId => {
+  const { id } = await ObjectIdValidator.validateAsync({ id: categoryId })
+  const category = await CategoryModel.findById(id)
+  if (!category) throw createHttpError.NotFound('CATEGORY_NOT_EXISRS')
+  return category
 }
