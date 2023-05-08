@@ -9,6 +9,7 @@ const BlogSchema = mongoose.Schema(
     thumbnail: { type: String, default: '', required: true },
     slug: { type: String, required: true, min: 3, max: 255, unique: true },
     short_link: { type: String, required: true },
+    category: { type: mongoose.Types.ObjectId, ref: 'category', required: true },
     views: { type: Number, default: 0 },
     tags: { type: [String], default: [] },
     reading_time: { type: Object, required: true },

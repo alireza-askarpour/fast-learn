@@ -10,6 +10,7 @@
  *                -  content
  *                -  slug
  *                -  tags
+ *                -  category
  *             properties:
  *                title:
  *                   type: string
@@ -23,6 +24,9 @@
  *                slug:
  *                   type: string
  *                   description: the slug of blog
+ *                category:
+ *                   type: string
+ *                   description: the category of blog
  *                tags:
  *                   type: array
  *                   description: the tags of blog
@@ -44,6 +48,9 @@
  *                slug:
  *                   type: string
  *                   description: the slug of blog
+ *                category:
+ *                   type: string
+ *                   description: the category of blog
  *                tags:
  *                   type: array
  *                   description: the tags of blog

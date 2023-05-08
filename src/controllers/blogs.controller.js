@@ -14,7 +14,7 @@ import { deleteFile } from '../utils/file-system.utils.js'
 export const createBlog = async (req, res, next) => {
   try {
     if (!req?.body?.tags) req.body.tags = []
-    const { title, description, content, slug, tags } = await createBlogSchema.validateAsync(req.body)
+    const { title, description, content, slug, tags, category } = await createBlogSchema.validateAsync(req.body)
 
     const thumbnail = req?.file?.path?.replace(/\\/g, '/')
     const author = req.user._id
@@ -29,6 +29,7 @@ export const createBlog = async (req, res, next) => {
       slug,
       tags,
       thumbnail,
+      category,
       author,
       short_link: nanoid(alphabetLetters + alphabetNumber, 5),
       reading_time: readingTime(getOnlyText(content)),
