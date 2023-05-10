@@ -1,3 +1,4 @@
+import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import createHttpError from 'http-errors'
@@ -24,6 +25,9 @@ app.use('/uploads', express.static('uploads'))
 
 // Settings
 app.use('/docs', swaggerUI.serve, swaggerSetup)
+
+// Auth
+app.use(cors({ origin: '*' }))
 
 // Routes
 app.use(allRoutes)
