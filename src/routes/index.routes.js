@@ -31,8 +31,9 @@ router.use('/permissions', verifyAccessToken, permissionsRoutes)
 router.use('/roles', verifyAccessToken, rolesRoutes)
 
 // support
-router.use('/namespace', verifyAccessToken, namespaceRoutes)
+router.use('/namespaces', verifyAccessToken, namespaceRoutes)
 
+// home route
 router.use(homeRoutes)
 
 // graphql

@@ -1,9 +1,10 @@
 import express from 'express'
 
-import { createNamespace } from '../controllers/namespace.router.js'
+import { createNamespace, getNamespaces } from '../controllers/namespace.router.js'
 
 const router = express.Router()
 
-router.post('/create', createNamespace)
+router.post('/', createNamespace)
+router.get('/', getNamespaces)
 
 export default router

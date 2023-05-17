@@ -24,6 +24,21 @@ export const createNamespace = async (req, res, next) => {
   }
 }
 
+export const getNamespaces = async (req, res, next) => {
+  try {
+    const namespaces = await ConversationModel.find({}, { rooms: 0 })
+    if (!namespaces) createHttpError.InternalServerError('FAILED_GET_NAMESPACES')
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      status: StatusCodes.OK,
+      namespaces,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 /**
  * Find namespace by endpoint
  */

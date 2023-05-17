@@ -18,7 +18,7 @@
 
 /**
  * @swagger
- *  /namespace/create:
+ *  /namespaces:
  *      post:
  *          tags: [Support]
  *          summary: add namespaces for chatroom
@@ -30,5 +30,16 @@
  *                          $ref: '#/components/schemas/Namespace'
  *          responses:
  *              201:
+ *                  description: success
+ */
+
+/**
+ * @swagger
+ *  /namespaces:
+ *      get:
+ *          tags: [Support]
+ *          summary: get list of namespaces
+ *          responses:
+ *              200:
  *                  description: success
  */
