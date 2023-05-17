@@ -14,6 +14,7 @@ import usersRoutes from './users.routes.js'
 import permissionsRoutes from './permissions.routes.js'
 import rolesRoutes from './roles.routes.js'
 import namespaceRoutes from './namespace.routes.js'
+import roomsRoutes from './rooms.routes.js'
 import homeRoutes from './home.routes.js'
 
 const router = express.Router()
@@ -32,6 +33,7 @@ router.use('/roles', verifyAccessToken, rolesRoutes)
 
 // support
 router.use('/namespaces', verifyAccessToken, namespaceRoutes)
+router.use('/rooms', verifyAccessToken, roomsRoutes)
 
 // home route
 router.use(homeRoutes)

@@ -24,6 +24,9 @@ export const createNamespace = async (req, res, next) => {
   }
 }
 
+/**
+ * Get list of namespaces
+ */
 export const getNamespaces = async (req, res, next) => {
   try {
     const namespaces = await ConversationModel.find({}, { rooms: 0 })
