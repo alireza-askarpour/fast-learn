@@ -13,6 +13,7 @@ import blogsRoutes from './blogs.routes.js'
 import usersRoutes from './users.routes.js'
 import permissionsRoutes from './permissions.routes.js'
 import rolesRoutes from './roles.routes.js'
+import namespaceRoutes from './namespace.routes.js'
 import homeRoutes from './home.routes.js'
 
 const router = express.Router()
@@ -24,10 +25,17 @@ router.use('/chapters', verifyAccessToken, chaptersRoutes)
 router.use('/episodes', verifyAccessToken, episodesRoutes)
 router.use('/blogs', blogsRoutes)
 router.use('/users', verifyAccessToken, usersRoutes)
+
+// RBACK
 router.use('/permissions', verifyAccessToken, permissionsRoutes)
 router.use('/roles', verifyAccessToken, rolesRoutes)
+
+// support
+router.use('/namespace', verifyAccessToken, namespaceRoutes)
+
 router.use(homeRoutes)
 
+// graphql
 router.use('/graphql', graphqlHTTP(graphqlConfig))
 
 export default router
