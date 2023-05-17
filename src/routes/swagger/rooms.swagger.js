@@ -39,3 +39,14 @@
  *              201:
  *                  description: success
  */
+
+/**
+ * @swagger
+ *  /rooms:
+ *      get:
+ *          tags: [Support]
+ *          summary: get list of rooms
+ *          responses:
+ *              200:
+ *                  description: success
+ */

@@ -29,6 +29,21 @@ export const createRoom = async (req, res, next) => {
   }
 }
 
+export const getRooms = async (req, res, next) => {
+  try {
+    const conversation = await ConversationModel.find({}, { rooms: 1 })
+    if (!conversation) throw createHttpError.InternalServerError('FAILED_GET_CONVERSATION')
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      status: StatusCodes.OK,
+      rooms: conversation,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 /**
  * Find a room by name
  */
