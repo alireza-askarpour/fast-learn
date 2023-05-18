@@ -2,7 +2,7 @@ import express from 'express'
 import { graphqlHTTP } from 'express-graphql'
 
 import { verifyAccessToken } from '../middlewares/authorization .middleware.js'
-import { graphqlConfig } from '../utils/graphql.config.js'
+import { graphqlConfig } from '../config/graphql.config.js'
 
 import accountsRoutes from './accounts.routes.js'
 import categoriesRoutes from './categories.routes.js'
