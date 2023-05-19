@@ -181,7 +181,7 @@ const findBlogBySlug = async blogSlug => {
   const { slug } = await SlugValidator.validateAsync({ slug: blogSlug })
   const blog = await BlogModel.findOne({ slug }).populate([
     { path: 'category', select: ['_id', 'value', 'name'] },
-    { path: 'author', select: ['mobile', 'first_name', 'last_name', 'username', 'email'] },
+    { path: 'author', select: ['first_name', 'last_name', 'email'] },
   ])
   if (!blog) throw createHttpError.NotFound('Not found blog')
   delete blog.category.subcategories

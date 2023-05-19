@@ -2,26 +2,18 @@
  * @swagger
  *    components:
  *       schemas:
- *          GetOTP:
+ *          Auth:
  *             type: object
  *             required:
- *                -  mobile
+ *                -  email
+ *                -  password
  *             properties:
- *                   mobile:
+ *                   email:
  *                      type: string
- *                      description: the user mobile for signup/signin
- *          CheckOTP:
- *             type: object
- *             required:
- *                -  mobile
- *                -  code
- *             properties:
- *                mobile:
- *                   type: string
- *                   description: the user mobile for signup/signin
- *                code:
- *                   type: string
- *                   description: resived code from GetOTP
+ *                      description: the user email for signup/signin
+ *                   password:
+ *                       type: string
+ *                       description: the user password for signup/signin
  *          RefreshToken:
  *             type: object
  *             required:
@@ -35,20 +27,19 @@
 
 /**
  * @swagger
- *    /accounts/get-otp:
+ *    /accounts/login:
  *       post:
  *          tags: [User-Authentication]
- *          summary: login user in account with phone number
- *          description: one time password(OTP) login
+ *          summary: login user in account with email and password
  *          requestBody:
  *             required: true
  *             content:
  *                application/x-www-form-urlencoded:
  *                   schema:
- *                      $ref: '#/components/schemas/GetOTP'
+ *                      $ref: '#/components/schemas/Auth'
  *                application/json:
  *                   schema:
- *                      $ref: '#/components/schemas/GetOTP'
+ *                      $ref: '#/components/schemas/Auth'
  *          responses:
  *             201:
  *                description: success
@@ -62,20 +53,19 @@
 
 /**
  * @swagger
- *    /accounts/check-otp:
+ *    /accounts/signup:
  *       post:
  *          tags: [User-Authentication]
- *          summary: check-otp value in user controller
- *          description: check otp with code - mobile and expires dete
+ *          summary: signup user in account with email and password
  *          requestBody:
  *             required: true
  *             content:
  *                application/x-www-form-urlencoded:
  *                   schema:
- *                      $ref: '#/components/schemas/CheckOTP'
+ *                      $ref: '#/components/schemas/Auth'
  *                application/json:
  *                   schema:
- *                      $ref: '#/components/schemas/CheckOTP'
+ *                      $ref: '#/components/schemas/Auth'
  *          responses:
  *             201:
  *                description: success

@@ -1,38 +1,26 @@
 import JWT from 'jsonwebtoken'
-import createHttpError from 'http-errors'
-import UserModels from '../models/user.models.js'
+import createError from 'http-errors'
+import UserModel from '../models/user.models.js'
 
-export const signAccessToken = userId => {
+export const signAccessToken = email => {
   return new Promise(async (resolve, reject) => {
-    const user = await UserModels.findById(userId)
-
-    const payload = {
-      mobile: user.mobile,
-    }
-    const options = {
-      expiresIn: '30d',
-    }
+    const payload = { email }
+    const options = { expiresIn: '30d' }
 
     JWT.sign(payload, process.env.ACCESS_TOKEN_SECRET_KEY, options, (err, token) => {
-      if (err) reject(createHttpError.InternalServerError())
+      if (err) reject(createError.InternalServerError('INTERNAL_SERVER_ERROR'))
       resolve(token)
     })
   })
 }
 
-export const signRefreshToken = userId => {
+export const signRefreshToken = email => {
   return new Promise(async (resolve, reject) => {
-    const user = await UserModels.findById(userId)
+    const payload = { email }
+    const options = { expiresIn: '1y' }
 
-    const payload = {
-      mobile: user.mobile,
-    }
-    const options = {
-      expiresIn: '1y',
-    }
-
-    JWT.sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY, options, async (err, token) => {
-      if (err) reject(createHttpError.InternalServerError())
+    JWT.sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY, options, (err, token) => {
+      if (err) reject(createError.InternalServerError('INTERNAL_SERVER_ERROR'))
       resolve(token)
     })
   })
@@ -41,12 +29,12 @@ export const signRefreshToken = userId => {
 export const verifyRefreshToken = token => {
   return new Promise((resolve, reject) => {
     JWT.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY, async (err, payload) => {
-      if (err) reject(createHttpError.Unauthorized('Login to your account'))
+      if (err) return reject(createError.Unauthorized('USER_UNAUTHORIZED'))
 
-      const user = await UserModels.findOne({ mobile: payload.mobile }, { password: 0, otp: 0 })
-      if (!user) reject(createHttpError.Unauthorized('Login to your account'))
+      const user = await UserModel.findOne({ email: payload.email }, { password: 0 })
+      if (!user) reject(createError.Unauthorized('USER_UNAUTHORIZED'))
 
-      resolve(payload.mobile)
+      resolve(payload.email)
     })
   })
 }

@@ -1,78 +1,50 @@
+import bcrypt from 'bcrypt'
 import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import UserModel from '../models/user.models.js'
-
-import { checkOtpSchema, getOtpSchema } from '../validations/user.validation.js'
+import { authSchema } from '../validations/user.validation.js'
+import { hashString } from '../utils/hash-string.utils.js'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token-utils.js'
-import { generateRandomNumber } from '../utils/generate-number.util.js'
-import { ROLES } from '../constants/RBACK.constant.js'
 
-export const getOtp = async (req, res, next) => {
-  const { mobile } = req.body
+export const login = async (req, res, next) => {
   try {
-    await getOtpSchema.validateAsync(req.body)
-    const code = generateRandomNumber()
+    const { email, password } = await authSchema.validateAsync(req.body)
 
-    const result = await saveUser(mobile, code)
-    if (!result) throw createHttpError.Unauthorized('Login failed')
+    const user = await UserModel.findOne({ email })
+    if (!user) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+    const comparedPassword = bcrypt.compareSync(password, user.password)
+    if (!comparedPassword) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
 
-    res.status(StatusCodes.CREATED).json({
-      status: StatusCodes.CREATED,
-      message: 'The validation code has been successfully sent to you',
-      code,
-      mobile,
+    const accessToken = await signAccessToken(email)
+    const refreshToken = await signRefreshToken(email)
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      status: StatusCodes.OK,
+      accessToken,
+      refreshToken,
     })
   } catch (err) {
     next(err)
   }
 }
 
-const saveUser = async (mobile, code) => {
-  const otp = {
-    code,
-    expiresIn: new Date().getTime() + 120000,
-  }
-  const existUserResult = await checkExistUser(mobile)
-  if (existUserResult) return await updateUser(mobile, { otp })
-
-  return !!(await UserModel.create({
-    mobile,
-    otp,
-    role: ROLES.STUDENT,
-  }))
-}
-
-const checkExistUser = async mobile => {
-  const user = await UserModel.findOne({ mobile })
-  return !!user
-}
-
-const updateUser = async (mobile, objectData) => {
-  const nullish = ['', ' ', 0, '0', null, undefined, NaN]
-  Object.keys(objectData).map(key => {
-    if (nullish.includes(objectData[key])) delete objectData[key]
-  })
-  const updateResult = await UserModel.updateOne({ mobile }, { $set: objectData })
-  return !!updateResult.modifiedCount
-}
-
-export const checkOtp = async (req, res, next) => {
-  const { mobile, code } = req.body
+export const signup = async (req, res, next) => {
   try {
-    await checkOtpSchema.validateAsync(req.body)
+    const { email, password } = await authSchema.validateAsync(req.body)
 
-    const user = await UserModel.findOne({ mobile })
-    if (!user) throw createHttpError.NotFound('Not found user')
+    const existsUser = await UserModel.findOne({ email })
+    if (existsUser) throw createHttpError.BadRequest('EMAIL_ALREADY_EXISTS')
 
-    const now = Date.now()
-    if (user.otp.code != code) throw createHttpError.Unauthorized('The code sent is not correct')
-    if (+user.otp.expiresIn < now) throw createHttpError.Unauthorized('Your code has expired')
+    const hashedPassword = hashString(password)
+    const accessToken = await signAccessToken(email)
+    const refreshToken = await signRefreshToken(email)
 
-    const accessToken = await signAccessToken(user._id)
-    const refreshToken = await signRefreshToken(user._id)
+    const createdResult = await UserModel.create({ email, password: hashedPassword })
+    if (!createdResult) throw createHttpError.InternalServerError('FAILED_CREATE_ACCOUNT')
 
-    res.status(StatusCodes.CREATED).json({
+    return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       accessToken,
       refreshToken,

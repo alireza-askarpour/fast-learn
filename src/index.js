@@ -10,12 +10,10 @@ import { swaggerSetup } from './config/swagger.config.js'
 import { morganMiddleware } from './middlewares/morgan.middleware.js'
 
 import allRoutes from './routes/index.routes.js'
-import { socketConfig } from './config/socket.config.js'
 
 // Config
 dotenv.config()
 connectDB()
-socketConfig()
 
 const app = express()
 

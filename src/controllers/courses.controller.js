@@ -15,7 +15,7 @@ export const getCourses = async (req, res, next) => {
     courses = await CourseModel.find(search ? { $text: { $search: search } } : {})
       .populate([
         { path: 'category', select: ['_id', 'value', 'name'] },
-        { path: 'teacher', select: ['mobile', 'first_name', 'last_name', 'username', 'email'] },
+        { path: 'teacher', select: ['first_name', 'last_name', 'email'] },
       ])
       .sort({ _id: -1 })
 
@@ -141,7 +141,7 @@ const findCourseBySlug = async slug => {
   await SlugValidator.validateAsync({ slug })
   const course = await CourseModel.findOne({ slug }).populate([
     { path: 'category', select: ['_id', 'value', 'name'] },
-    { path: 'teacher', select: ['mobile', 'first_name', 'last_name', 'username', 'email'] },
+    { path: 'teacher', select: ['first_name', 'last_name', 'email'] },
   ])
   if (!course) throw createHttpError.NotFound('Not found course')
   delete course.category.subcategories

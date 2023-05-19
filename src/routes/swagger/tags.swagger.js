@@ -1,10 +1,10 @@
 /**
  * @swagger
  *    tags:
- *    -  name: RBAC(Admin-Panel)
- *       description: management permimssion section
  *    -  name: User-Authentication
  *       description: user-auth section
+ *    -  name: RBAC(Admin-Panel)
+ *       description: management permimssion section
  *    -  name: Courses(Admin-Panel)
  *       description: management couese section
  *    -  name: Chapters(Admin-Panel)
