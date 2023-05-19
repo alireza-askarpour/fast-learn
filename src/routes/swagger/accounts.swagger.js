@@ -27,6 +27,32 @@
 
 /**
  * @swagger
+ *    /accounts/login-admin:
+ *       post:
+ *          tags: [User-Authentication]
+ *          summary: login admin in to admin panel with email and password
+ *          requestBody:
+ *             required: true
+ *             content:
+ *                application/x-www-form-urlencoded:
+ *                   schema:
+ *                      $ref: '#/components/schemas/Auth'
+ *                application/json:
+ *                   schema:
+ *                      $ref: '#/components/schemas/Auth'
+ *          responses:
+ *             201:
+ *                description: success
+ *             400:
+ *                description: bad request
+ *             401:
+ *                description: unauthorization
+ *             500:
+ *                description: internal server error
+ */
+
+/**
+ * @swagger
  *    /accounts/login:
  *       post:
  *          tags: [User-Authentication]

@@ -8,6 +8,36 @@ import { hashString } from '../utils/hash-string.utils.js'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token-utils.js'
 
 /**
+ * Login admin
+ */
+export const loginAdmin = async (req, res, next) => {
+  try {
+    const { email, password } = await authSchema.validateAsync(req.body)
+
+    const user = await UserModel.findOne({ email })
+    if (!user) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+
+    const checkAdmin = await UserModel.findOne({ role: 'admin' })
+    if (!checkAdmin) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+
+    const comparedPassword = bcrypt.compareSync(password, user.password)
+    if (!comparedPassword) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+
+    const accessToken = await signAccessToken(email)
+    const refreshToken = await signRefreshToken(email)
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      status: StatusCodes.OK,
+      accessToken,
+      refreshToken,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
  * Login user
  */
 export const login = async (req, res, next) => {
@@ -16,6 +46,7 @@ export const login = async (req, res, next) => {
 
     const user = await UserModel.findOne({ email })
     if (!user) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+
     const comparedPassword = bcrypt.compareSync(password, user.password)
     if (!comparedPassword) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
 
