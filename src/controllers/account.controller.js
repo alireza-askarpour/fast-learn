@@ -7,6 +7,9 @@ import { authSchema } from '../validations/user.validation.js'
 import { hashString } from '../utils/hash-string.utils.js'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token-utils.js'
 
+/**
+ * Login user
+ */
 export const login = async (req, res, next) => {
   try {
     const { email, password } = await authSchema.validateAsync(req.body)
@@ -30,6 +33,9 @@ export const login = async (req, res, next) => {
   }
 }
 
+/**
+ * Signup user
+ */
 export const signup = async (req, res, next) => {
   try {
     const { email, password } = await authSchema.validateAsync(req.body)
@@ -57,11 +63,10 @@ export const signup = async (req, res, next) => {
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body
   try {
-    const mobile = await verifyRefreshToken(refreshToken)
-    const user = await UserModel.findOne({ mobile })
+    const email = await verifyRefreshToken(refreshToken)
 
-    const accessToken = await signAccessToken(user._id)
-    const newRefreshToken = await signRefreshToken(user._id)
+    const accessToken = await signAccessToken(email)
+    const newRefreshToken = await signRefreshToken(email)
 
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
