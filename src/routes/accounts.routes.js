@@ -10,6 +10,6 @@ router.post('/login-admin', loginAdmin)
 router.post('/login', login)
 router.post('/signup', signup)
 router.post('/refresh-token', refreshToken)
-router.get('/get-me', verifyAccessToken, getMe)
+router.get('/me', verifyAccessToken, getMe)
 
 export default router

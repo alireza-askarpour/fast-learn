@@ -128,7 +128,7 @@
 
 /**
  * @swagger
- *    /accounts/get-me:
+ *    /accounts/me:
  *       get:
  *          tags: [User-Authentication]
  *          summary: get logged in user
