@@ -6,7 +6,7 @@ import { verifyAccessToken } from '../middlewares/authorization .middleware.js'
 
 const router = express.Router()
 
-router.post('/login-admin', loginAdmin)
+router.post('/admin/login', loginAdmin)
 router.post('/login', login)
 router.post('/signup', signup)
 router.post('/refresh-token', refreshToken)

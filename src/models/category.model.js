@@ -9,8 +9,8 @@ const CategorySchema = new mongoose.Schema(
   },
   {
     id: false,
+    versionKey: false,
     toJSON: {
-      versionKey: false,
       virtuals: true,
     },
   }

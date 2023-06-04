@@ -3,7 +3,7 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import UserModel from '../models/user.models.js'
-import { authSchema } from '../validations/user.validation.js'
+import { loginSchema, signupSchema } from '../validations/user.validation.js'
 import { hashString } from '../utils/hash-string.utils.js'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token-utils.js'
 
@@ -12,7 +12,7 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/
  */
 export const loginAdmin = async (req, res, next) => {
   try {
-    const { email, password } = await authSchema.validateAsync(req.body)
+    const { email, password } = await loginSchema.validateAsync(req.body)
 
     const user = await UserModel.findOne({ email })
     if (!user) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
@@ -42,7 +42,7 @@ export const loginAdmin = async (req, res, next) => {
  */
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = await authSchema.validateAsync(req.body)
+    const { email, password } = await loginSchema.validateAsync(req.body)
 
     const user = await UserModel.findOne({ email })
     if (!user) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
@@ -69,7 +69,7 @@ export const login = async (req, res, next) => {
  */
 export const signup = async (req, res, next) => {
   try {
-    const { email, password } = await authSchema.validateAsync(req.body)
+    const { email, password, fullname } = await signupSchema.validateAsync(req.body)
 
     const existsUser = await UserModel.findOne({ email })
     if (existsUser) throw createHttpError.BadRequest('EMAIL_ALREADY_EXISTS')
@@ -78,7 +78,7 @@ export const signup = async (req, res, next) => {
     const accessToken = await signAccessToken(email)
     const refreshToken = await signRefreshToken(email)
 
-    const createdResult = await UserModel.create({ email, password: hashedPassword })
+    const createdResult = await UserModel.create({ fullname, email, password: hashedPassword })
     if (!createdResult) throw createHttpError.InternalServerError('FAILED_CREATE_ACCOUNT')
 
     return res.status(StatusCodes.CREATED).json({

@@ -2,7 +2,7 @@
  * @swagger
  *    components:
  *       schemas:
- *          Auth:
+ *          Login:
  *             type: object
  *             required:
  *                -  email
@@ -10,10 +10,26 @@
  *             properties:
  *                   email:
  *                      type: string
- *                      description: the user email for signup/signin
+ *                      description: the user email for login
  *                   password:
  *                       type: string
- *                       description: the user password for signup/signin
+ *                       description: the user password for signup
+ *          Signup:
+ *             type: object
+ *             required:
+ *                -  email
+ *                -  password
+ *                -  fullname
+ *             properties:
+ *                   fullname:
+ *                      type: string
+ *                      description: the user fullname for signup
+ *                   email:
+ *                      type: string
+ *                      description: the user email for signup
+ *                   password:
+ *                       type: string
+ *                       description: the user password for signup
  *          RefreshToken:
  *             type: object
  *             required:
@@ -27,19 +43,19 @@
 
 /**
  * @swagger
- *    /accounts/login-admin:
+ *    /accounts/admin/login:
  *       post:
- *          tags: [User-Authentication]
+ *          tags: [Authentication]
  *          summary: login admin in to admin panel with email and password
  *          requestBody:
  *             required: true
  *             content:
  *                application/x-www-form-urlencoded:
  *                   schema:
- *                      $ref: '#/components/schemas/Auth'
+ *                      $ref: '#/components/schemas/Login'
  *                application/json:
  *                   schema:
- *                      $ref: '#/components/schemas/Auth'
+ *                      $ref: '#/components/schemas/Login'
  *          responses:
  *             201:
  *                description: success
@@ -55,17 +71,17 @@
  * @swagger
  *    /accounts/login:
  *       post:
- *          tags: [User-Authentication]
+ *          tags: [Authentication]
  *          summary: login user in account with email and password
  *          requestBody:
  *             required: true
  *             content:
  *                application/x-www-form-urlencoded:
  *                   schema:
- *                      $ref: '#/components/schemas/Auth'
+ *                      $ref: '#/components/schemas/Login'
  *                application/json:
  *                   schema:
- *                      $ref: '#/components/schemas/Auth'
+ *                      $ref: '#/components/schemas/Login'
  *          responses:
  *             201:
  *                description: success
@@ -81,17 +97,17 @@
  * @swagger
  *    /accounts/signup:
  *       post:
- *          tags: [User-Authentication]
+ *          tags: [Authentication]
  *          summary: signup user in account with email and password
  *          requestBody:
  *             required: true
  *             content:
  *                application/x-www-form-urlencoded:
  *                   schema:
- *                      $ref: '#/components/schemas/Auth'
+ *                      $ref: '#/components/schemas/Signup'
  *                application/json:
  *                   schema:
- *                      $ref: '#/components/schemas/Auth'
+ *                      $ref: '#/components/schemas/Signup'
  *          responses:
  *             201:
  *                description: success
@@ -107,7 +123,7 @@
  * @swagger
  *    /accounts/refresh-token:
  *       post:
- *          tags: [User-Authentication]
+ *          tags: [Authentication]
  *          summary: send refresh token for get new refresh token and refresh token
  *          description: refresh token
  *          requestBody:
@@ -130,7 +146,7 @@
  * @swagger
  *    /accounts/me:
  *       get:
- *          tags: [User-Authentication]
+ *          tags: [Authentication]
  *          summary: get logged in user
  *          responses:
  *             201:

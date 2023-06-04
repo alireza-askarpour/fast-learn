@@ -1,10 +1,8 @@
 import mongoose from 'mongoose'
-import { nanoid, alphabetNumber, alphabetLowerCaseLetters } from '../config/nanoid.config.js'
 
 const UserSchema = new mongoose.Schema(
   {
-    first_name: { type: String },
-    last_name: { type: String },
+    fullname: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     role: {
@@ -22,6 +20,6 @@ const UserSchema = new mongoose.Schema(
   }
 )
 
-UserSchema.index({ first_name: 'text', last_name: 'text', email: 'text' })
+UserSchema.index({ fullname: 'text', email: 'text' })
 
 export default mongoose.model('user', UserSchema)
