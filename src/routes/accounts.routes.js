@@ -13,6 +13,11 @@ router.post('/refresh-token', accountController.refreshToken)
 
 // Account
 router.get('/me', verifyAccessToken, accountController.getMe)
-router.patch('/basket/add/:courseId', verifyAccessToken, accountController.AddToBasket)
+router.patch('/basket/add/:courseId', verifyAccessToken, accountController.addToBasket)
+router.patch(
+  '/basket/remove/:courseId',
+  verifyAccessToken,
+  accountController.removeFromBasket
+)
 
 export default router

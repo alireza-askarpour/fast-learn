@@ -180,3 +180,25 @@
  *             500:
  *                description: Internal Server Error
  */
+
+/**
+ * @swagger
+ *    /accounts/basket/remove/{courseId}:
+ *       patch:
+ *          tags: [Account]
+ *          summary: remove couese from basket
+ *          parameters:
+ *              -   in: path
+ *                  name: courseId
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *             201:
+ *                description: Success
+ *             400:
+ *                description: Bad Request
+ *             401:
+ *                description: Unauthorized
+ *             500:
+ *                description: Internal Server Error
+ */

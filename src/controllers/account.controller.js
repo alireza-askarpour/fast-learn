@@ -12,6 +12,7 @@ import {
 } from '../utils/token-utils.js'
 import { catchAsync } from '../utils/catch-async.js'
 import { findCourseById } from './public.controller.js'
+import { copyObject } from '../utils/copy-object.js'
 
 /**
  * Login admin
@@ -142,12 +143,11 @@ export const getMe = async (req, res, next) => {
 /**
  * Add course to basket
  */
-export const AddToBasket = catchAsync(async (req, res) => {
+export const addToBasket = catchAsync(async (req, res) => {
   const { courseId } = req.params
 
   await findCourseById(courseId)
 
-  console.log({ courseId })
   const existCourse = await UserModel.findOne({ _id: req.user._id, basket: courseId })
   if (existCourse) throw createHttpError.BadRequest('COURSE_ALREADY_EXIST')
 
@@ -163,3 +163,35 @@ export const AddToBasket = catchAsync(async (req, res) => {
     message: 'COURSE_ADDED_TO_BASKET',
   })
 })
+
+/**
+ * Remove course from basket
+ */
+export const removeFromBasket = catchAsync(async (req, res) => {
+  const { courseId } = req.params
+
+  await findCourseById(courseId)
+
+  const userCourse = await UserModel.findOne({ _id: req.user._id, courses: courseId })
+  if (userCourse) throw createHttpError.BadRequest('COURSE_ALREADY_PURCHASED')
+
+  const course = await findCourseInBasket(req.user._id, courseId)
+
+  if (!course) throw createHttpError.NotFound('COURSE_NOT_FOUND_IN_BASKET')
+  await UserModel.updateOne({ _id: req.user._id }, { $pull: { basket: courseId } })
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message: 'COURSE_REMOVED_FROM_BASKET',
+  })
+})
+
+export const findCourseInBasket = async (userID, courseID) => {
+  const findResult = await UserModel.findOne(
+    { _id: userID, basket: courseID },
+    { basket: 1 }
+  )
+  const userDetails = copyObject(findResult)
+  return userDetails?.basket?.[0]
+}
