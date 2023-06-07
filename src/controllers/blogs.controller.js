@@ -177,8 +177,24 @@ export const likeBlog = catchAsync(async (req, res, next) => {
 
   const likedBlog = await BlogModel.findOne({ _id: id, likes: req.user._id })
   const updateQuery = likedBlog ? { $pull: { likes: req.user._id } } : { $push: { likes: req.user._id } }
-  await BlogModel.updateOne(updateQuery)
+  await BlogModel.updateOne({ _id: id }, updateQuery)
   const message = likedBlog ? 'UNLIKE' : 'LIKE'
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message,
+  })
+})
+
+export const bookmarkBlog = catchAsync(async (req, res) => {
+  const { id } = req.params
+  await findBlogById(id)
+
+  const bookmarkedBlog = await BlogModel.findOne({ _id: id, bookmarks: req.user._id })
+  const updateQuery = bookmarkedBlog ? { $pull: { bookmarks: req.user._id } } : { $push: { bookmarks: req.user._id } }
+  await BlogModel.updateOne({ _id: id }, updateQuery)
+  const message = bookmarkedBlog ? 'REMOVE_FROM_BOOKMARK' : 'ADDED_TO_BOOKMARK'
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,

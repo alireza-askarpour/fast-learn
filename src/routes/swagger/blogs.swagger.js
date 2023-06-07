@@ -156,3 +156,19 @@
  *              200:
  *                  description: success
  */
+
+/**
+ * @swagger
+ *  /blogs/{id}/bookmark:
+ *      patch:
+ *          tags: [Blogs]
+ *          summary: bookmark and unline blog
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */
