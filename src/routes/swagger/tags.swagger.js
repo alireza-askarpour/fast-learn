@@ -11,7 +11,7 @@
  *       description: management chapter section
  *    -  name: Episodes(Admin-Panel)
  *       description: management episode section
- *    -  name: Blogs(Admin-Panel)
+ *    -  name: Blogs
  *       description: management blogs section
  *    -  name: Categories(Admin-Panel)
  *       description: all method and routes about category section

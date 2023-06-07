@@ -11,6 +11,7 @@ import { ObjectIdValidator, SlugValidator } from '../validations/public.validati
 import { nanoid, alphabetLetters, alphabetNumber } from '../config/nanoid.config.js'
 import { getOnlyText } from '../utils/get-only-text.utils.js'
 import { deleteFile } from '../utils/file-system.utils.js'
+import { catchAsync } from '../utils/catch-async.js'
 
 export const createBlog = async (req, res, next) => {
   try {
@@ -169,6 +170,22 @@ export const getBlogs = async (req, res, next) => {
     next(err)
   }
 }
+
+export const likeBlog = catchAsync(async (req, res, next) => {
+  const { id } = req.params
+  await findBlogById(id)
+
+  const likedBlog = await BlogModel.findOne({ _id: id, likes: req.user._id })
+  const updateQuery = likedBlog ? { $pull: { likes: req.user._id } } : { $push: { likes: req.user._id } }
+  await BlogModel.updateOne(updateQuery)
+  const message = likedBlog ? 'UNLIKE' : 'LIKE'
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message,
+  })
+})
 
 const findBlogById = async blogId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: blogId })

@@ -63,7 +63,7 @@
  * @swagger
  *    /blogs:
  *       post:
- *          tags: [Blogs(Admin-Panel)]
+ *          tags: [Blogs]
  *          summary: create new blog
  *          requestBody:
  *             required: true
@@ -80,7 +80,7 @@
  * @swagger
  *    /blogs/{id}:
  *       patch:
- *          tags: [Blogs(Admin-Panel)]
+ *          tags: [Blogs]
  *          summary: update blog by ID
  *          parameters:
  *             -  in: path
@@ -102,7 +102,7 @@
  * @swagger
  *    /blogs/{id}:
  *       delete:
- *          tags: [Blogs(Admin-Panel)]
+ *          tags: [Blogs]
  *          summary: Remove blog by ID
  *          parameters:
  *             -  in: path
@@ -118,7 +118,7 @@
  * @swagger
  *    /blogs/{slug}:
  *       get:
- *          tags: [Blogs(Admin-Panel)]
+ *          tags: [Blogs]
  *          summary: Get blog by slug
  *          parameters:
  *             -  in: path
@@ -134,9 +134,25 @@
  * @swagger
  *    /blogs:
  *       get:
- *          tags: [Blogs(Admin-Panel)]
+ *          tags: [Blogs]
  *          summary: Get blogs List
  *          responses:
  *             200:
  *                description: blog resived successfully
+ */
+
+/**
+ * @swagger
+ *  /blogs/{id}/like:
+ *      patch:
+ *          tags: [Blogs]
+ *          summary: like and unline blog
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
  */
