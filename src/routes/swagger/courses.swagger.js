@@ -219,3 +219,19 @@
  *              200:
  *                  description: success
  */
+
+/**
+ * @swagger
+ *  /courses/{id}/bookmark:
+ *      patch:
+ *          tags: [Courses]
+ *          summary: bookmark and unline course
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */

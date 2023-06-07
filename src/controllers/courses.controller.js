@@ -137,8 +137,24 @@ export const likeCourse = catchAsync(async (req, res) => {
 
   const likedCourse = await CourseModel.findOne({ _id: id, likes: req.user._id })
   const likeQuery = likedCourse ? { $pull: { likes: req.user._id } } : { $push: { likes: req.user._id } }
-  await CourseModel.updateOne(likeQuery)
+  await CourseModel.updateOne({ _id: id }, likeQuery)
   const message = likedCourse ? 'UNLIKE' : 'LIKE'
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message,
+  })
+})
+
+export const bookmarkCourse = catchAsync(async (req, res) => {
+  const { id } = req.params
+  await findCourseById(id)
+
+  const bookmarkedCourse = await CourseModel.findOne({ _id: id, bookmarks: req.user._id })
+  const updateQuery = bookmarkedCourse ? { $pull: { bookmarks: req.user._id } } : { $push: { bookmarks: req.user._id } }
+  await CourseModel.updateOne({ _id: id }, updateQuery)
+  const message = bookmarkedCourse ? 'REMOVE_FROM_BOOKMARK' : 'ADDED_TO_BOOKMARK'
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
