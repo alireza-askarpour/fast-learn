@@ -1,15 +1,18 @@
 import express from 'express'
 
-import { login, signup, refreshToken, getMe, loginAdmin } from '../controllers/account.controller.js'
-
+import * as accountController from '../controllers/account.controller.js'
 import { verifyAccessToken } from '../middlewares/authorization .middleware.js'
 
 const router = express.Router()
 
-router.post('/admin/login', loginAdmin)
-router.post('/login', login)
-router.post('/signup', signup)
-router.post('/refresh-token', refreshToken)
-router.get('/me', verifyAccessToken, getMe)
+// Auth
+router.post('/admin/login', accountController.loginAdmin)
+router.post('/login', accountController.login)
+router.post('/signup', accountController.signup)
+router.post('/refresh-token', accountController.refreshToken)
+
+// Account
+router.get('/me', verifyAccessToken, accountController.getMe)
+router.patch('/basket/add/:courseId', verifyAccessToken, accountController.AddToBasket)
 
 export default router

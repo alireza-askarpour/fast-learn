@@ -3,6 +3,8 @@
  *    tags:
  *    -  name: Authentication
  *       description: user-auth section
+ *    -  name: Account
+ *       description: Account section
  *    -  name: RBAC(Admin-Panel)
  *       description: management permimssion section
  *    -  name: Courses
@@ -17,6 +19,8 @@
  *       description: all method and routes about category section
  *    -  name: Users(Admin-Panel)
  *       description: management users
+ *    -  name: Basket
+ *       description: add and delete course in basket
  *    -  name: Support
  *       description: support section
  */

@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import CourseModel from '../models/course.models.js'
 
-import { findCourseById } from './courses.controller.js'
+import { findCourseById } from './public.controller.js'
 import { ObjectIdValidator } from '../validations/public.validation.js'
 import { ChapterSchema } from '../validations/chapter.validation.js'
 
@@ -20,7 +20,8 @@ export const createChapter = async (req, res, next) => {
         },
       }
     )
-    if (createChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError('The chapter was not added')
+    if (createChapterResult.modifiedCount == 0)
+      throw createHttpError.InternalServerError('The chapter was not added')
 
     res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,

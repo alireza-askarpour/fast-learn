@@ -13,6 +13,12 @@ const UserSchema = new mongoose.Schema(
     },
     avater: { type: String, default: undefined },
     courses: { type: [mongoose.Types.ObjectId], default: [] },
+    basket: {
+      type: [mongoose.Types.ObjectId],
+      unique: true,
+      default: [],
+      ref: 'product',
+    },
   },
   {
     timestamps: true,

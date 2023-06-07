@@ -4,10 +4,15 @@ import { StatusCodes } from 'http-status-codes'
 import CourseModel from '../models/course.models.js'
 import CategoryModel from '../models/category.model.js'
 
-import { deleteFile } from '../utils/file-system.utils.js'
-import { createCourseSchema, updateCourseSchema } from '../validations/course.validation.js'
-import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
+import { findCourseById } from './public.controller.js'
+
 import { catchAsync } from '../utils/catch-async.js'
+import { deleteFile } from '../utils/file-system.utils.js'
+import {
+  createCourseSchema,
+  updateCourseSchema,
+} from '../validations/course.validation.js'
+import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
 
 export const getCourses = async (req, res, next) => {
   const { search } = req.query
@@ -20,7 +25,8 @@ export const getCourses = async (req, res, next) => {
       ])
       .sort({ _id: -1 })
 
-    if (!courses) throw createHttpError.InternalServerError('The list of courses was not received')
+    if (!courses)
+      throw createHttpError.InternalServerError('The list of courses was not received')
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -57,7 +63,9 @@ export const createCourse = async (req, res, next) => {
     const teacher = req.user._id
 
     if (type === 'free' && (+price > 0 || +discount > 0)) {
-      throw createHttpError.BadRequest('No price or discount can be registered for the free course')
+      throw createHttpError.BadRequest(
+        'No price or discount can be registered for the free course'
+      )
     }
 
     const existSlug = await CourseModel.findOne({ slug })
@@ -74,7 +82,8 @@ export const createCourse = async (req, res, next) => {
     }
 
     const newCourse = await CourseModel.create(course)
-    if (!newCourse) throw createHttpError.InternalServerError('The course was not registered')
+    if (!newCourse)
+      throw createHttpError.InternalServerError('The course was not registered')
 
     res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
@@ -100,7 +109,9 @@ export const updateCourse = async (req, res, next) => {
     const { type, price, discount, slug, category } = courseDataBody
 
     if (type === 'free' && (+price > 0 || +discount > 0)) {
-      throw createHttpError.BadRequest('No price or discount can be registered for the free course')
+      throw createHttpError.BadRequest(
+        'No price or discount can be registered for the free course'
+      )
     }
 
     const existSlug = await CourseModel.findOne({ slug })
@@ -114,8 +125,12 @@ export const updateCourse = async (req, res, next) => {
       deleteFile(course.thumbnail)
     }
 
-    const updatedCourseResult = await CourseModel.updateOne({ _id: id }, { $set: courseDataBody })
-    if (updatedCourseResult.modifiedCount == 0) throw createHttpError.InternalServerError('The course was not updated')
+    const updatedCourseResult = await CourseModel.updateOne(
+      { _id: id },
+      { $set: courseDataBody }
+    )
+    if (updatedCourseResult.modifiedCount == 0)
+      throw createHttpError.InternalServerError('The course was not updated')
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -136,7 +151,9 @@ export const likeCourse = catchAsync(async (req, res) => {
   await findCourseById(id)
 
   const likedCourse = await CourseModel.findOne({ _id: id, likes: req.user._id })
-  const likeQuery = likedCourse ? { $pull: { likes: req.user._id } } : { $push: { likes: req.user._id } }
+  const likeQuery = likedCourse
+    ? { $pull: { likes: req.user._id } }
+    : { $push: { likes: req.user._id } }
   await CourseModel.updateOne({ _id: id }, likeQuery)
   const message = likedCourse ? 'UNLIKE' : 'LIKE'
 
@@ -152,7 +169,9 @@ export const bookmarkCourse = catchAsync(async (req, res) => {
   await findCourseById(id)
 
   const bookmarkedCourse = await CourseModel.findOne({ _id: id, bookmarks: req.user._id })
-  const updateQuery = bookmarkedCourse ? { $pull: { bookmarks: req.user._id } } : { $push: { bookmarks: req.user._id } }
+  const updateQuery = bookmarkedCourse
+    ? { $pull: { bookmarks: req.user._id } }
+    : { $push: { bookmarks: req.user._id } }
   await CourseModel.updateOne({ _id: id }, updateQuery)
   const message = bookmarkedCourse ? 'REMOVE_FROM_BOOKMARK' : 'ADDED_TO_BOOKMARK'
 
@@ -162,13 +181,6 @@ export const bookmarkCourse = catchAsync(async (req, res) => {
     message,
   })
 })
-
-export const findCourseById = async courseId => {
-  const { id } = await ObjectIdValidator.validateAsync({ id: courseId })
-  const course = await CourseModel.findById(id)
-  if (!course) throw createHttpError.NotFound('Not found course')
-  return course
-}
 
 const findCourseBySlug = async slug => {
   await SlugValidator.validateAsync({ slug })

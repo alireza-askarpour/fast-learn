@@ -146,7 +146,7 @@
  * @swagger
  *    /accounts/me:
  *       get:
- *          tags: [Authentication]
+ *          tags: [Account]
  *          summary: get logged in user
  *          responses:
  *             201:
@@ -157,4 +157,26 @@
  *                description: Unauthorization
  *             500:
  *                description: Internal server error
+ */
+
+/**
+ * @swagger
+ *    /accounts/basket/add/{courseId}:
+ *       patch:
+ *          tags: [Account]
+ *          summary: add couese to basket
+ *          parameters:
+ *              -   in: path
+ *                  name: courseId
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *             201:
+ *                description: Success
+ *             400:
+ *                description: Bad Request
+ *             401:
+ *                description: Unauthorized
+ *             500:
+ *                description: Internal Server Error
  */

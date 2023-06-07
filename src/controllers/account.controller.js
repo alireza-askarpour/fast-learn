@@ -5,7 +5,13 @@ import { StatusCodes } from 'http-status-codes'
 import UserModel from '../models/user.models.js'
 import { loginSchema, signupSchema } from '../validations/user.validation.js'
 import { hashString } from '../utils/hash-string.utils.js'
-import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token-utils.js'
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} from '../utils/token-utils.js'
+import { catchAsync } from '../utils/catch-async.js'
+import { findCourseById } from './public.controller.js'
 
 /**
  * Login admin
@@ -78,7 +84,11 @@ export const signup = async (req, res, next) => {
     const accessToken = await signAccessToken(email)
     const refreshToken = await signRefreshToken(email)
 
-    const createdResult = await UserModel.create({ fullname, email, password: hashedPassword })
+    const createdResult = await UserModel.create({
+      fullname,
+      email,
+      password: hashedPassword,
+    })
     if (!createdResult) throw createHttpError.InternalServerError('FAILED_CREATE_ACCOUNT')
 
     return res.status(StatusCodes.CREATED).json({
@@ -128,3 +138,28 @@ export const getMe = async (req, res, next) => {
     next(err)
   }
 }
+
+/**
+ * Add course to basket
+ */
+export const AddToBasket = catchAsync(async (req, res) => {
+  const { courseId } = req.params
+
+  await findCourseById(courseId)
+
+  console.log({ courseId })
+  const existCourse = await UserModel.findOne({ _id: req.user._id, basket: courseId })
+  if (existCourse) throw createHttpError.BadRequest('COURSE_ALREADY_EXIST')
+
+  const addedToBasket = await UserModel.updateOne(
+    { _id: req.user._id },
+    { $push: { basket: courseId } }
+  )
+  if (!addedToBasket) throw createHttpError.InternalServerError('FAILED_ADD_TO_BASKET')
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message: 'COURSE_ADDED_TO_BASKET',
+  })
+})
