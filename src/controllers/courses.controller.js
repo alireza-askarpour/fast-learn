@@ -7,6 +7,7 @@ import CategoryModel from '../models/category.model.js'
 import { deleteFile } from '../utils/file-system.utils.js'
 import { createCourseSchema, updateCourseSchema } from '../validations/course.validation.js'
 import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
+import { catchAsync } from '../utils/catch-async.js'
 
 export const getCourses = async (req, res, next) => {
   const { search } = req.query
@@ -129,6 +130,22 @@ export const updateCourse = async (req, res, next) => {
     next(err)
   }
 }
+
+export const likeCourse = catchAsync(async (req, res) => {
+  const { id } = req.params
+  await findCourseById(id)
+
+  const likedCourse = await CourseModel.findOne({ _id: id, likes: req.user._id })
+  const likeQuery = likedCourse ? { $pull: { likes: req.user._id } } : { $push: { likes: req.user._id } }
+  await CourseModel.updateOne(likeQuery)
+  const message = likedCourse ? 'UNLIKE' : 'LIKE'
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message,
+  })
+})
 
 export const findCourseById = async courseId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: courseId })

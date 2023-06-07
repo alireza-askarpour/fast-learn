@@ -5,7 +5,7 @@
  *       description: user-auth section
  *    -  name: RBAC(Admin-Panel)
  *       description: management permimssion section
- *    -  name: Courses(Admin-Panel)
+ *    -  name: Courses
  *       description: management couese section
  *    -  name: Chapters(Admin-Panel)
  *       description: management chapter section

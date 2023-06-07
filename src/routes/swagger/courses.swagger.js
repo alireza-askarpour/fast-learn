@@ -126,7 +126,7 @@
  * @swagger
  *    /courses:
  *       get:
- *          tags: [Courses(Admin-Panel)]
+ *          tags: [Courses]
  *          summary: get all courses
  *          parameters:
  *             -  in: query
@@ -144,7 +144,7 @@
  * @swagger
  *    /courses/{slug}:
  *       get:
- *          tags: [Courses(Admin-Panel)]
+ *          tags: [Courses]
  *          summary: get a course by slug
  *          parameters:
  *             -  in: path
@@ -162,7 +162,7 @@
  * @swagger
  * /courses:
  *    post:
- *       tags: [Courses(Admin-Panel)]
+ *       tags: [Courses]
  *       summary: create and save courses
  *       requestBody:
  *          required: true
@@ -179,7 +179,7 @@
  * @swagger
  *    /courses/{id}:
  *       patch:
- *          tags: [Courses(Admin-Panel)]
+ *          tags: [Courses]
  *          summary: update one course by id
  *          parameters:
  *             -  in: path
@@ -202,4 +202,20 @@
  *                description: Unauthorization
  *             500:
  *                description: Internal server error
+ */
+
+/**
+ * @swagger
+ *  /courses/{id}/like:
+ *      patch:
+ *          tags: [Courses]
+ *          summary: like and unline course
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
  */
