@@ -38,10 +38,16 @@
  *                refreshToken:
  *                   type: string
  *                   description: enter refresh-token for get refresh token and refresh-token
- *          UploadImage:
+ *          UploadAvatar:
  *             type: object
  *             properties:
  *                avatar:
+ *                   type: string
+ *                   format: binary
+ *          UploadCover:
+ *             type: object
+ *             properties:
+ *                cover:
  *                   type: string
  *                   format: binary
  */
@@ -219,7 +225,7 @@
  *             content:
  *                multipart/form-data:
  *                   schema:
- *                      $ref: '#/components/schemas/UploadImage'
+ *                      $ref: '#/components/schemas/UploadAvatar'
  *          responses:
  *             201:
  *                description: uploaded avatar
@@ -234,4 +240,21 @@
  *          responses:
  *             200:
  *                description: removed avatar
+ */
+
+/**
+ * @swagger
+ *    /accounts/upload-cover:
+ *       patch:
+ *          tags: [Account]
+ *          summary: upload cover for user
+ *          requestBody:
+ *             required: true
+ *             content:
+ *                multipart/form-data:
+ *                   schema:
+ *                      $ref: '#/components/schemas/UploadCover'
+ *          responses:
+ *             201:
+ *                description: uploaded cover
  */

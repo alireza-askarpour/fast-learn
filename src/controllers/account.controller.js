@@ -201,12 +201,16 @@ export const uploadAvatar = async (req, res, next) => {
     const userId = req.user._id
     const user = await UserModel.findOne({ _id: userId })
 
+    if (!req?.file) {
+      throw createHttpError.BadRequest('INVALID_Avatar')
+    }
+
     // Delete old avatar
     if (user?.avatar) {
       deleteFile(user.avatar)
     }
 
-    // Upload cover
+    // Upload avatar
     const result = await UserModel.updateOne({ _id: user._id }, { $set: { avatar } })
     if (result.modifiedCount == 0) {
       throw createHttpError.InternalServerError('FAILED_UPLOAD_AVATAR')
@@ -248,6 +252,41 @@ export const removeAvatar = catchAsync(async (req, res) => {
     message: 'REMOVED_AVATAR',
   })
 })
+
+export const uploadCover = async (req, res, next) => {
+  console.log('test')
+  try {
+    const cover = req?.file?.path?.replace(/\\/g, '/')
+    const userId = req.user._id
+    const user = await UserModel.findOne({ _id: userId })
+    if (!req?.file) {
+      throw createHttpError.BadRequest('INVALID_COVER')
+    }
+
+    // Delete old cover
+    if (user?.cover) {
+      deleteFile(user.cover)
+    }
+
+    // Upload cover
+    const result = await UserModel.updateOne({ _id: user._id }, { $set: { cover } })
+    if (result.modifiedCount == 0) {
+      throw createHttpError.InternalServerError('FAILED_UPLOAD_COVER')
+    }
+
+    res.status(StatusCodes.OK).json({
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'UPLOADED_COVER',
+    })
+  } catch (err) {
+    if (req?.file) {
+      const cover = req?.file?.path?.replace(/\\/g, '/')
+      deleteFile(cover)
+    }
+    next(err)
+  }
+}
 
 // Find a course in basket by userID and courseID
 export const findCourseInBasket = async (userID, courseID) => {

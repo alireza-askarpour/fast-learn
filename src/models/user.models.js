@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema(
       enum: ['student', 'writer', 'admin'],
     },
     avatar: { type: String, default: undefined },
+    cover: { type: String, default: undefined },
     courses: { type: [mongoose.Types.ObjectId], default: [] },
     basket: {
       type: [mongoose.Types.ObjectId],
