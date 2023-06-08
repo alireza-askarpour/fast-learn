@@ -50,6 +50,15 @@
  *                cover:
  *                   type: string
  *                   format: binary
+ *          CreateSkill:
+ *              type: object
+ *              properties:
+ *                  name:
+ *                      type: string
+ *                      description: the name of skill
+ *                  value:
+ *                      type: string
+ *                      description: the title of skil
  */
 
 /**
@@ -268,4 +277,24 @@
  *          responses:
  *             200:
  *                description: removed cover
+ */
+
+/**
+ * @swagger
+ *    /accounts/create-skill:
+ *       post:
+ *          tags: [Account]
+ *          summary: create new skill
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/CreateSkill'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/CreateSkill'
+ *          responses:
+ *             201:
+ *                description: created skill
  */

@@ -20,6 +20,7 @@ const UserSchema = new mongoose.Schema(
       default: [],
       ref: 'product',
     },
+    skills: { type: [mongoose.Types.ObjectId], default: [] },
   },
   {
     timestamps: true,

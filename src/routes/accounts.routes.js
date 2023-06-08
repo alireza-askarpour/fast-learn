@@ -12,9 +12,10 @@ router.post('/login', accountController.login)
 router.post('/signup', accountController.signup)
 router.post('/refresh-token', accountController.refreshToken)
 
-// Account
+// Get me
 router.get('/me', verifyAccessToken, accountController.getMe)
 
+// Basket
 router.patch('/basket/add/:courseId', verifyAccessToken, accountController.addToBasket)
 router.patch(
   '/basket/remove/:courseId',
@@ -22,6 +23,7 @@ router.patch(
   accountController.removeFromBasket
 )
 
+// Avatar
 router.patch(
   '/upload-avatar',
   verifyAccessToken,
@@ -30,6 +32,7 @@ router.patch(
 )
 router.patch('/remove-avatar', verifyAccessToken, accountController.removeAvatar)
 
+// Cover
 router.patch(
   '/upload-cover',
   verifyAccessToken,
@@ -38,5 +41,7 @@ router.patch(
 )
 router.patch('/remove-cover', verifyAccessToken, accountController.removeCover)
 
+// Skill
+router.post('/create-skill', verifyAccessToken, accountController.createSkill)
 
 export default router

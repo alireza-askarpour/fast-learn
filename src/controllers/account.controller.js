@@ -3,7 +3,8 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import UserModel from '../models/user.models.js'
-import { loginSchema, signupSchema } from '../validations/user.validation.js'
+import SkillModel from '../models/skill.model.js'
+
 import { hashString } from '../utils/hash-string.utils.js'
 import {
   signAccessToken,
@@ -14,6 +15,9 @@ import { catchAsync } from '../utils/catch-async.js'
 import { findCourseById } from './public.controller.js'
 import { copyObject } from '../utils/copy-object.js'
 import { deleteFile } from '../utils/file-system.utils.js'
+
+import { loginSchema, signupSchema } from '../validations/user.validation.js'
+import { createSkillSchema } from '../validations/skill.validation.js'
 
 /**
  * Login admin
@@ -195,6 +199,16 @@ export const removeFromBasket = catchAsync(async (req, res) => {
   })
 })
 
+// Find a course in basket by userID and courseID
+export const findCourseInBasket = async (userID, courseID) => {
+  const findResult = await UserModel.findOne(
+    { _id: userID, basket: courseID },
+    { basket: 1 }
+  )
+  const userDetails = copyObject(findResult)
+  return userDetails?.basket?.[0]
+}
+
 export const uploadAvatar = async (req, res, next) => {
   try {
     const avatar = req?.file?.path?.replace(/\\/g, '/')
@@ -310,12 +324,29 @@ export const removeCover = catchAsync(async (req, res) => {
   })
 })
 
-// Find a course in basket by userID and courseID
-export const findCourseInBasket = async (userID, courseID) => {
-  const findResult = await UserModel.findOne(
-    { _id: userID, basket: courseID },
-    { basket: 1 }
+/**
+ * Create new skill
+ */
+export const createSkill = catchAsync(async (req, res) => {
+  const { name, value } = await createSkillSchema.validateAsync(req.body)
+  const userId = req.user._id
+
+  const createdResult = await SkillModel.create({ name, value })
+  if (!createdResult) {
+    throw createHttpError.InternalServerError('FAILED_CREATE_SKILL')
+  }
+
+  const updateResult = await UserModel.updateOne(
+    { _id: userId },
+    { $push: { skills: createdResult._id } }
   )
-  const userDetails = copyObject(findResult)
-  return userDetails?.basket?.[0]
-}
+  if (updateResult.modifiedCount == 0) {
+    throw createHttpError.InternalServerError('FAILED_ADD_SKILL_IN_USER_ACCOUNT')
+  }
+
+  res.status(StatusCodes.CREATED).json({
+    status: StatusCodes.CREATED,
+    success: true,
+    message: 'CREATED_SKILL',
+  })
+})
