@@ -3,7 +3,7 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import UserModel from '../models/user.models.js'
-import SkillModel from '../models/skill.model.js'
+import SkillModel, { SkillSchema } from '../models/skill.model.js'
 
 import { hashString } from '../utils/hash-string.utils.js'
 import {
@@ -108,6 +108,9 @@ export const signup = async (req, res, next) => {
   }
 }
 
+/**
+ * Refresh token
+ */
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body
   try {
@@ -210,6 +213,9 @@ export const findCourseInBasket = async (userID, courseID) => {
   return userDetails?.basket?.[0]
 }
 
+/**
+ * Upload Avatar
+ */
 export const uploadAvatar = async (req, res, next) => {
   try {
     const avatar = req?.file?.path?.replace(/\\/g, '/')
@@ -245,6 +251,9 @@ export const uploadAvatar = async (req, res, next) => {
   }
 }
 
+/**
+ * Remove avatar
+ */
 export const removeAvatar = catchAsync(async (req, res) => {
   const userId = req.user._id
   const user = await UserModel.findById(userId)
@@ -268,6 +277,9 @@ export const removeAvatar = catchAsync(async (req, res) => {
   })
 })
 
+/**
+ * Upload cover
+ */
 export const uploadCover = async (req, res, next) => {
   try {
     const cover = req?.file?.path?.replace(/\\/g, '/')
@@ -302,6 +314,9 @@ export const uploadCover = async (req, res, next) => {
   }
 }
 
+/**
+ * Remove cover
+ */
 export const removeCover = catchAsync(async (req, res) => {
   const userId = req.user._id
   const user = await UserModel.findById(userId)
@@ -371,5 +386,39 @@ export const updateSkill = catchAsync(async (req, res) => {
     status: StatusCodes.OK,
     success: true,
     message: 'UPDATED_SKILL',
+  })
+})
+
+/**
+ * Remove skill by ID
+ */
+export const removeSkill = catchAsync(async (req, res) => {
+  const { id } = await ObjectIdValidator.validateAsync(req.params)
+  const userId = req.user._id
+
+  // Check exist skill into user skills
+  const existSkill = await UserModel.findOne({ _id: req.user._id, skills: id })
+  console.log(existSkill)
+  if (!existSkill) {
+    throw createHttpError.BadRequest('NOT_EXIST_SKILL')
+  }
+
+  const updateResult = await UserModel.updateOne(
+    { _id: userId },
+    { $pull: { skills: id } }
+  )
+  if (updateResult.modifiedCount == 0) {
+    throw createHttpError.InternalServerError('FAILED_REMOVE_SKILL_IN_USER_ACCOUNT')
+  }
+
+  const removedResult = await SkillModel.findByIdAndDelete(id)
+  if (!removedResult) {
+    throw createHttpError.InternalServerError('FAILED_REMOVE_SKILL')
+  }
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message: 'REMOVED_SKILL',
   })
 })

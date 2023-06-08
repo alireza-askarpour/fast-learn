@@ -44,5 +44,6 @@ router.patch('/remove-cover', verifyAccessToken, accountController.removeCover)
 // Skill
 router.post('/create-skill', verifyAccessToken, accountController.createSkill)
 router.patch('/update-skill/:id', verifyAccessToken, accountController.updateSkill)
+router.delete('/remove-skill/:id', verifyAccessToken, accountController.removeSkill)
 
 export default router

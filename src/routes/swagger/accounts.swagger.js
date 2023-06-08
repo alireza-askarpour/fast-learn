@@ -335,3 +335,19 @@
  *             200:
  *                description: updated skill
  */
+
+/**
+ * @swagger
+ *    /accounts/remove-skill/{id}:
+ *       delete:
+ *          tags: [Account]
+ *          summary: remove a skill
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *             200:
+ *                description: removed skill
+ */
