@@ -224,3 +224,14 @@
  *             201:
  *                description: uploaded avatar
  */
+
+/**
+ * @swagger
+ *    /accounts/remove-avatar:
+ *       patch:
+ *          tags: [Account]
+ *          summary: remove avatar for user
+ *          responses:
+ *             200:
+ *                description: removed avatar
+ */

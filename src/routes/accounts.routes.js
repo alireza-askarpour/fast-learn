@@ -26,5 +26,6 @@ router.patch(
   uploadCourseThumbnail.single('avatar'),
   accountController.uploadAvatar
 )
+router.patch('/remove-avatar', verifyAccessToken, accountController.removeAvatar)
 
 export default router

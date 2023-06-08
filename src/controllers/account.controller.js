@@ -226,6 +226,29 @@ export const uploadAvatar = async (req, res, next) => {
   }
 }
 
+export const removeAvatar = catchAsync(async (req, res) => {
+  const userId = req.user._id
+  const user = await UserModel.findById(userId)
+
+  if (user?.avatar) {
+    deleteFile(user.avatar)
+  }
+
+  const RemovedAvatar = await UserModel.updateOne(
+    { _id: user._id },
+    { $set: { avatar: null } }
+  )
+  if (RemovedAvatar.modifiedCount === 0) {
+    throw createHttpError.InternalServerError('FAILED_REMOVE_AVATAR')
+  }
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'REMOVED_AVATAR',
+  })
+})
+
 // Find a course in basket by userID and courseID
 export const findCourseInBasket = async (userID, courseID) => {
   const findResult = await UserModel.findOne(
