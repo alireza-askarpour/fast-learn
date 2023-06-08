@@ -19,8 +19,6 @@
  *       description: all method and routes about category section
  *    -  name: Users(Admin-Panel)
  *       description: management users
- *    -  name: Basket
- *       description: add and delete course in basket
  *    -  name: Support
  *       description: support section
  */

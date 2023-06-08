@@ -38,7 +38,12 @@
  *                refreshToken:
  *                   type: string
  *                   description: enter refresh-token for get refresh token and refresh-token
- *
+ *          UploadImage:
+ *             type: object
+ *             properties:
+ *                avatar:
+ *                   type: string
+ *                   format: binary
  */
 
 /**
@@ -201,4 +206,21 @@
  *                description: Unauthorized
  *             500:
  *                description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ *    /accounts/upload-avatar:
+ *       patch:
+ *          tags: [Account]
+ *          summary: upload avatar for user
+ *          requestBody:
+ *             required: true
+ *             content:
+ *                multipart/form-data:
+ *                   schema:
+ *                      $ref: '#/components/schemas/UploadImage'
+ *          responses:
+ *             201:
+ *                description: uploaded avatar
  */

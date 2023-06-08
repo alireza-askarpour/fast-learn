@@ -2,6 +2,7 @@ import express from 'express'
 
 import * as accountController from '../controllers/account.controller.js'
 import { verifyAccessToken } from '../middlewares/authorization .middleware.js'
+import { uploadCourseThumbnail } from '../middlewares/upload.middleware.js'
 
 const router = express.Router()
 
@@ -18,6 +19,12 @@ router.patch(
   '/basket/remove/:courseId',
   verifyAccessToken,
   accountController.removeFromBasket
+)
+router.patch(
+  '/upload-avatar',
+  verifyAccessToken,
+  uploadCourseThumbnail.single('avatar'),
+  accountController.uploadAvatar
 )
 
 export default router

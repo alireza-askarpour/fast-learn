@@ -13,6 +13,7 @@ import {
 import { catchAsync } from '../utils/catch-async.js'
 import { findCourseById } from './public.controller.js'
 import { copyObject } from '../utils/copy-object.js'
+import { deleteFile } from '../utils/file-system.utils.js'
 
 /**
  * Login admin
@@ -148,6 +149,11 @@ export const addToBasket = catchAsync(async (req, res) => {
 
   await findCourseById(courseId)
 
+  // Check the purchased course
+  const userCourse = await UserModel.findOne({ _id: req.user._id, courses: courseId })
+  if (userCourse) throw createHttpError.BadRequest('COURSE_ALREADY_PURCHASED')
+
+  // Check the exist course in basket
   const existCourse = await UserModel.findOne({ _id: req.user._id, basket: courseId })
   if (existCourse) throw createHttpError.BadRequest('COURSE_ALREADY_EXIST')
 
@@ -165,18 +171,20 @@ export const addToBasket = catchAsync(async (req, res) => {
 })
 
 /**
- * Remove course from basket
+ * Remove course from basket by courseId
  */
 export const removeFromBasket = catchAsync(async (req, res) => {
   const { courseId } = req.params
 
   await findCourseById(courseId)
 
+  // Check the purchased course
   const userCourse = await UserModel.findOne({ _id: req.user._id, courses: courseId })
   if (userCourse) throw createHttpError.BadRequest('COURSE_ALREADY_PURCHASED')
 
   const course = await findCourseInBasket(req.user._id, courseId)
 
+  // Check the exist course in basket
   if (!course) throw createHttpError.NotFound('COURSE_NOT_FOUND_IN_BASKET')
   await UserModel.updateOne({ _id: req.user._id }, { $pull: { basket: courseId } })
 
@@ -187,6 +195,38 @@ export const removeFromBasket = catchAsync(async (req, res) => {
   })
 })
 
+export const uploadAvatar = async (req, res, next) => {
+  try {
+    const avatar = req?.file?.path?.replace(/\\/g, '/')
+    const userId = req.user._id
+    const user = await UserModel.findOne({ _id: userId })
+
+    // Delete old avatar
+    if (user?.avatar) {
+      deleteFile(user.avatar)
+    }
+
+    // Upload cover
+    const result = await UserModel.updateOne({ _id: user._id }, { $set: { avatar } })
+    if (result.modifiedCount == 0) {
+      throw createHttpError.InternalServerError('FAILED_UPLOAD_AVATAR')
+    }
+
+    res.status(StatusCodes.OK).json({
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'UPLOADED_AVATAR',
+    })
+  } catch (err) {
+    if (req?.file) {
+      const avatar = req?.file?.path?.replace(/\\/g, '/')
+      deleteFile(avatar)
+    }
+    next(err)
+  }
+}
+
+// Find a course in basket by userID and courseID
 export const findCourseInBasket = async (userID, courseID) => {
   const findResult = await UserModel.findOne(
     { _id: userID, basket: courseID },

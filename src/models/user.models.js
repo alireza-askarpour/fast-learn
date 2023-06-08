@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema(
       default: 'student',
       enum: ['student', 'writer', 'admin'],
     },
-    avater: { type: String, default: undefined },
+    avatar: { type: String, default: undefined },
     courses: { type: [mongoose.Types.ObjectId], default: [] },
     basket: {
       type: [mongoose.Types.ObjectId],
