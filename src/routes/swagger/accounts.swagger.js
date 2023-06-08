@@ -258,3 +258,14 @@
  *             201:
  *                description: uploaded cover
  */
+
+/**
+ * @swagger
+ *    /accounts/remove-cover:
+ *       patch:
+ *          tags: [Account]
+ *          summary: remove cover for user
+ *          responses:
+ *             200:
+ *                description: removed cover
+ */

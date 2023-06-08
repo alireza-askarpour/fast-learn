@@ -36,5 +36,7 @@ router.patch(
   uploadCourseThumbnail.single('cover'),
   accountController.uploadCover
 )
+router.patch('/remove-cover', verifyAccessToken, accountController.removeCover)
+
 
 export default router

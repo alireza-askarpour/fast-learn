@@ -254,7 +254,6 @@ export const removeAvatar = catchAsync(async (req, res) => {
 })
 
 export const uploadCover = async (req, res, next) => {
-  console.log('test')
   try {
     const cover = req?.file?.path?.replace(/\\/g, '/')
     const userId = req.user._id
@@ -287,6 +286,29 @@ export const uploadCover = async (req, res, next) => {
     next(err)
   }
 }
+
+export const removeCover = catchAsync(async (req, res) => {
+  const userId = req.user._id
+  const user = await UserModel.findById(userId)
+
+  if (user?.cover) {
+    deleteFile(user.cover)
+  }
+
+  const RemovedCover = await UserModel.updateOne(
+    { _id: user._id },
+    { $set: { cover: null } }
+  )
+  if (RemovedCover.modifiedCount === 0) {
+    throw createHttpError.InternalServerError('FAILED_REMOVE_COVER')
+  }
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'REMOVED_COVER',
+  })
+})
 
 // Find a course in basket by userID and courseID
 export const findCourseInBasket = async (userID, courseID) => {
