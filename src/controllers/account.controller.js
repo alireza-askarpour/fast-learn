@@ -17,7 +17,8 @@ import { copyObject } from '../utils/copy-object.js'
 import { deleteFile } from '../utils/file-system.utils.js'
 
 import { loginSchema, signupSchema } from '../validations/user.validation.js'
-import { createSkillSchema } from '../validations/skill.validation.js'
+import { createSkillSchema, updateSkillSchema } from '../validations/skill.validation.js'
+import { ObjectIdValidator } from '../validations/public.validation.js'
 
 /**
  * Login admin
@@ -348,5 +349,27 @@ export const createSkill = catchAsync(async (req, res) => {
     status: StatusCodes.CREATED,
     success: true,
     message: 'CREATED_SKILL',
+  })
+})
+
+/**
+ * Update a skill by ID
+ */
+export const updateSkill = catchAsync(async (req, res) => {
+  const { id } = await ObjectIdValidator.validateAsync(req.params)
+  const skillData = await updateSkillSchema.validateAsync(req.body)
+
+  // Check exist skill into user skills
+  const existSkill = await UserModel.findOne({ _id: req.user._id, skills: id })
+  if (!existSkill) throw createHttpError.BadRequest('ENTERED_SKILL_IS_NOT_EXIST')
+
+  // Update skill
+  const updatedSkill = await SkillModel.findByIdAndUpdate(id, skillData)
+  if (!updatedSkill) throw createHttpError.InternalServerError('FAILED_UPDATE_SKILL')
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    message: 'UPDATED_SKILL',
   })
 })

@@ -52,6 +52,18 @@
  *                   format: binary
  *          CreateSkill:
  *              type: object
+ *              required:
+ *                  -   name
+ *                  -   value
+ *              properties:
+ *                  name:
+ *                      type: string
+ *                      description: the name of skill
+ *                  value:
+ *                      type: string
+ *                      description: the title of skil
+ *          UpdateSkill:
+ *              type: object
  *              properties:
  *                  name:
  *                      type: string
@@ -297,4 +309,29 @@
  *          responses:
  *             201:
  *                description: created skill
+ */
+
+/**
+ * @swagger
+ *    /accounts/update-skill/{id}:
+ *       patch:
+ *          tags: [Account]
+ *          summary: update a skill
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/UpdateSkill'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/UpdateSkill'
+ *          responses:
+ *             200:
+ *                description: updated skill
  */
