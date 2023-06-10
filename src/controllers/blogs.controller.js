@@ -16,7 +16,8 @@ import { catchAsync } from '../utils/catch-async.js'
 export const createBlog = async (req, res, next) => {
   try {
     if (!req?.body?.tags) req.body.tags = []
-    const { title, description, content, slug, tags, category } = await createBlogSchema.validateAsync(req.body)
+    const { title, description, content, slug, tags, category } =
+      await createBlogSchema.validateAsync(req.body)
 
     const thumbnail = req?.file?.path?.replace(/\\/g, '/')
     const author = req.user._id
@@ -73,7 +74,8 @@ export const updateBlog = async (req, res, next) => {
     await checkExistsCategory(blogDataBody.category)
 
     const updateResult = await BlogModel.updateOne({ _id: id }, { $set: blogDataBody })
-    if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError('Update failed')
+    if (updateResult.modifiedCount == 0)
+      throw createHttpError.InternalServerError('Update failed')
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -95,7 +97,8 @@ export const removeBlog = async (req, res, next) => {
     await findBlogById(id)
 
     const result = await BlogModel.deleteOne({ _id: id })
-    if (result.deletedCount == 0) throw createHttpError.InternalServerError('Delete failed')
+    if (result.deletedCount == 0)
+      throw createHttpError.InternalServerError('Delete failed')
 
     res.status(StatusCodes.OK).json({
       statusCode: StatusCodes.OK,
@@ -176,7 +179,9 @@ export const likeBlog = catchAsync(async (req, res, next) => {
   await findBlogById(id)
 
   const likedBlog = await BlogModel.findOne({ _id: id, likes: req.user._id })
-  const updateQuery = likedBlog ? { $pull: { likes: req.user._id } } : { $push: { likes: req.user._id } }
+  const updateQuery = likedBlog
+    ? { $pull: { likes: req.user._id } }
+    : { $push: { likes: req.user._id } }
   await BlogModel.updateOne({ _id: id }, updateQuery)
   const message = likedBlog ? 'UNLIKE' : 'LIKE'
 
@@ -192,7 +197,9 @@ export const bookmarkBlog = catchAsync(async (req, res) => {
   await findBlogById(id)
 
   const bookmarkedBlog = await BlogModel.findOne({ _id: id, bookmarks: req.user._id })
-  const updateQuery = bookmarkedBlog ? { $pull: { bookmarks: req.user._id } } : { $push: { bookmarks: req.user._id } }
+  const updateQuery = bookmarkedBlog
+    ? { $pull: { bookmarks: req.user._id } }
+    : { $push: { bookmarks: req.user._id } }
   await BlogModel.updateOne({ _id: id }, updateQuery)
   const message = bookmarkedBlog ? 'REMOVE_FROM_BOOKMARK' : 'ADDED_TO_BOOKMARK'
 
@@ -203,9 +210,23 @@ export const bookmarkBlog = catchAsync(async (req, res) => {
   })
 })
 
+/**
+ * Get list comments
+ */
+export const getPostComments = catchAsync(async (req, res) => {
+  console.log(req.params)
+  const post = await findBlogById(req.params.id)
+
+  res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    success: true,
+    comments: post.comments,
+  })
+})
+
 const findBlogById = async blogId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: blogId })
-  const blog = await BlogModel.findById(id)
+  const blog = await BlogModel.findById(id).populate('comments')
   if (!blog) throw createHttpError.NotFound('Not found blog')
   return blog
 }

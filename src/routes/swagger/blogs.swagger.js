@@ -172,3 +172,19 @@
  *              200:
  *                  description: success
  */
+
+/**
+ * @swagger
+ *  /blogs/{id}/comments:
+ *      get:
+ *          tags: [Blogs]
+ *          summary: get list of comments
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */
