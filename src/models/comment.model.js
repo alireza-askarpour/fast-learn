@@ -10,6 +10,7 @@ const CommentSchema = new Schema(
     type: { type: String, required: true, enum: ['course', 'blog'] },
     content: { type: String, required: true },
     reply: [{ type: Types.ObjectId, ref: 'comment' }],
+    openToComment: { type: Boolean, required: true },
   },
   { timestamps: true, versionKey: false }
 )

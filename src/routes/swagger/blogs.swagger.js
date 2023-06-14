@@ -57,6 +57,31 @@
  *                thumbnail:
  *                   type: string
  *                   format: binary
+ *          AddComment:
+ *              type: object
+ *              required:
+ *                  -   type
+ *                  -   content
+ *              properties:
+ *                  blog:
+ *                      type: string
+ *                      description: blog ID
+ *                  course:
+ *                      type: string
+ *                      description: course ID
+ *                  type:
+ *                      $ref: '#/components/schemas/Types'
+ *                  content:
+ *                      type: string
+ *                      description: content of comment
+ *                  reply:
+ *                      type: string
+ *                      description: ID reply of comment
+ *          Types:
+ *              type: string
+ *              enum:
+ *                  -  course
+ *                  -  blog
  */
 
 /**
@@ -186,5 +211,31 @@
  *                  required: true
  *          responses:
  *              200:
+ *                  description: success
+ */
+
+/**
+ * @swagger
+ *  /blogs/{id}/comment:
+ *      post:
+ *          tags: [Blogs]
+ *          summary: add new comment
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *                  description: blog id
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/AddComment'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/AddComment'
+ *          responses:
+ *              201:
  *                  description: success
  */

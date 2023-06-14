@@ -13,6 +13,7 @@ import {
   likeBlog,
   bookmarkBlog,
   getPostComments,
+  addPostComment,
 } from '../controllers/blogs.controller.js'
 
 const router = express.Router()
@@ -23,7 +24,8 @@ router.post('/', verifyAccessToken, uploadCourseThumbnail.single('thumbnail'), s
 router.get('/:slug', getBlog)
 router.patch('/:id',  verifyAccessToken, uploadCourseThumbnail.single('thumbnail'), stringToArray('tags'), updateBlog)
 router.patch('/:id/like', verifyAccessToken, likeBlog)
-router.get('/:id/comments', getPostComments)
+router.get('/:id/comment', getPostComments)
+router.post('/:id/comment', addPostComment)
 router.patch('/:id/bookmark', verifyAccessToken, bookmarkBlog)
 router.delete('/:id', verifyAccessToken, removeBlog)
 

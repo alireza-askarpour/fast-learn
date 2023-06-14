@@ -1,0 +1,4 @@
+export const messages = {
+  TYPE_SHOULD_BE_BLOG: 'TYPE_SHOULD_BE_BLOG',
+  FAILED_ADD_COMMENT: 'FAILED_ADD_COMMENT',
+}

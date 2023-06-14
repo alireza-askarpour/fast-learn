@@ -4,14 +4,18 @@ import { StatusCodes } from 'http-status-codes'
 
 import BlogModel from '../models/blog.models.js'
 import CategoryModel from '../models/category.model.js'
+import CommentModel from '../models/comment.model.js'
 
 import { createBlogSchema, updateBlogSchema } from '../validations/blog.validation.js'
 import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
+import { addPostCommentValidation } from '../validations/comment.validation.js'
 
 import { nanoid, alphabetLetters, alphabetNumber } from '../config/nanoid.config.js'
 import { getOnlyText } from '../utils/get-only-text.utils.js'
 import { deleteFile } from '../utils/file-system.utils.js'
 import { catchAsync } from '../utils/catch-async.js'
+
+import { messages } from '../constants/messages.js'
 
 export const createBlog = async (req, res, next) => {
   try {
@@ -214,11 +218,56 @@ export const bookmarkBlog = catchAsync(async (req, res) => {
  * Get list comments
  */
 export const getPostComments = catchAsync(async (req, res) => {
-  console.log(req.params)
   const post = await findBlogById(req.params.id)
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
+    success: true,
+    comments: post.comments,
+  })
+})
+
+/**
+ * Add comment or replay comment
+ */
+export const addPostComment = catchAsync(async (req, res) => {
+  // check exist blog
+  await findBlogById(req.params.id)
+
+  const { blog, type, content, reply } = await addPostCommentValidation.validateAsync(
+    req.body
+  )
+  const user = req.user._id
+
+  if (type !== 'blog') throw createHttpError.BadRequest('')
+
+  if (reply) {
+    const parentComment = await CommentModel.findOne({ reply })
+    if (!parentComment) throw createHttpError.NotFound('COMMENT_NOT_FOUND')
+    if (parentComment.openToComment) {
+      throw createHttpError.BadRequest('ANSWER_REGISTRATION_IS_NOT_ALLOWED')
+    }
+    const createdResult = await CommentModel.create({
+      user,
+      blog,
+      type,
+      content,
+      reply,
+    })
+  } else {
+    const createdResult = await CommentModel.create({
+      user,
+      blog,
+      type,
+      content,
+    })
+    if (!createdResult) {
+      throw createHttpError.InternalServerError(messages.FAILED_ADD_COMMENT)
+    }
+  }
+
+  res.status(StatusCodes.CREATED).json({
+    status: StatusCodes.CREATED,
     success: true,
     comments: post.comments,
   })
