@@ -57,4 +57,4 @@ Your app should now be running on [localhost:8000](http://localhost:8000/).
 ### swagger-ui
 - http://localhost:{port}/docs
 
-![Swagger](https://i.ibb.co/0hNx1bd/screencapture-localhost-4000-docs-2023-04-04-09-40-21-1.png)
+![Swagger](https://i.ibb.co/c3BBcRP/screencapture-localhost-8000-docs-2023-06-22-04-09-32-1.png)
