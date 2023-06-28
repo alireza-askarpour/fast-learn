@@ -4,15 +4,21 @@ import { getVideoDurationInSeconds } from 'get-video-duration'
 
 import CourseModel from '../models/course.models.js'
 
-import { createEpisodeSchema, updateEpisodeSchema } from '../validations/episode.validation.js'
+import {
+  createEpisodeSchema,
+  updateEpisodeSchema,
+} from '../validations/episode.validation.js'
 import { ObjectIdValidator } from '../validations/public.validation.js'
 
 import { getTimeOfEpisode } from '../utils/get-time.utils.js'
 import { deleteFile } from '../utils/file-system.utils.js'
 
+import { Messages } from '../constants/messages.js'
+
 export const createEpisode = async (req, res, next) => {
   try {
-    const { title, description, type, chapterId, courseId } = await createEpisodeSchema.validateAsync(req.body)
+    const { title, description, type, chapterId, courseId } =
+      await createEpisodeSchema.validateAsync(req.body)
 
     const videoAddress = req?.file?.path?.replace(/\\/g, '/')
     const videoURL = `${process.env.BASE_URL}/${videoAddress}`
@@ -20,10 +26,13 @@ export const createEpisode = async (req, res, next) => {
     const time = getTimeOfEpisode(seconds)
 
     const course = await CourseModel.findById(courseId)
-    if (!course) throw createHttpError.NotFound('No course was found with this ID')
+    if (!course) throw createHttpError.NotFound(Messages.NOT_FOUND_COURSE_WITH_THIS_ID)
 
-    const chapter = await CourseModel.findOne({ _id: courseId, 'chapters._id': chapterId })
-    if (!chapter) throw createHttpError.NotFound('No chapter was found with this ID')
+    const chapter = await CourseModel.findOne({
+      _id: courseId,
+      'chapters._id': chapterId,
+    })
+    if (!chapter) throw createHttpError.NotFound(Messages.NOT_FOUND_CHAPTER_WITH_THIS_ID)
 
     const episode = {
       title,
@@ -47,14 +56,14 @@ export const createEpisode = async (req, res, next) => {
     )
 
     if (createEpisodeResult.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('Failed to add episode')
+      throw createHttpError.InternalServerError(Messages.FAILED_CREATED_EPISODE)
     }
 
     res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       success: true,
       episode,
-      message: 'Episode added successfully',
+      message: Messages.CREATED_EPISODE,
     })
   } catch (err) {
     next(err)
@@ -91,13 +100,13 @@ export const updateEpisode = async (req, res, next) => {
     )
 
     if (!editEpisodeResult.modifiedCount) {
-      throw createHttpError.InternalServerError('The episode could not be edited.')
+      throw createHttpError.InternalServerError(Messages.FAILED_UPDATED_EPISODE)
     }
 
     res.status(StatusCodes.OK).json({
       statusCode: StatusCodes.OK,
       success: true,
-      message: 'The episode was edited successfully',
+      message: Messages.UPDATED_EPISODE,
     })
   } catch (err) {
     next(err)
@@ -106,7 +115,9 @@ export const updateEpisode = async (req, res, next) => {
 
 export const removeEpisode = async (req, res, next) => {
   try {
-    const { id: episodeId } = await ObjectIdValidator.validateAsync({ id: req.params.episodeId })
+    const { id: episodeId } = await ObjectIdValidator.validateAsync({
+      id: req.params.episodeId,
+    })
     const episode = await getOneEpisode(episodeId)
 
     const removeEpisodeResult = await CourseModel.updateOne(
@@ -123,13 +134,13 @@ export const removeEpisode = async (req, res, next) => {
     )
 
     if (removeEpisodeResult.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('Failed to delete episode')
+      throw createHttpError.InternalServerError(Messages.FAILED_DELETE_EPISODE)
     }
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,
-      message: 'The episode was successfully deleted',
+      message: Messages.DELETED_EPISODE,
     })
   } catch (err) {
     next(err)
@@ -145,10 +156,10 @@ const getOneEpisode = async episodeId => {
       'chapters.episodes.$': 1,
     }
   )
-  if (!course) throw createHttpError.NotFound('No episode found.')
+  if (!course) throw createHttpError.NotFound(Messages.NOT_FOUND_EPISODE)
 
   const episode = course?.chapters?.[0]?.episodes?.[0]
-  if (!episode) throw createHttpError.NotFound('No episodes found')
+  if (!episode) throw createHttpError.NotFound(Messages.NOT_FOUND_EPISODE)
 
   return episode
 }

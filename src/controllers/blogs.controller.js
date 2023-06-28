@@ -15,7 +15,7 @@ import { getOnlyText } from '../utils/get-only-text.utils.js'
 import { deleteFile } from '../utils/file-system.utils.js'
 import { catchAsync } from '../utils/catch-async.js'
 
-import { messages } from '../constants/messages.js'
+import { Messages } from '../constants/messages.js'
 
 export const createBlog = async (req, res, next) => {
   try {
@@ -27,7 +27,7 @@ export const createBlog = async (req, res, next) => {
     const author = req.user._id
 
     const existSlug = await BlogModel.findOne({ slug })
-    if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
+    if (existSlug) throw createHttpError.BadRequest(Messages.SLUG_ALREADY_EXISTED)
 
     await checkExistsCategory(category)
 
@@ -45,12 +45,12 @@ export const createBlog = async (req, res, next) => {
     }
 
     const blog = await BlogModel.create(newBlog)
-    if (!blog) throw createHttpError.InternalServerError('Blog could not be created')
+    if (!blog) throw createHttpError.InternalServerError(Messages.FAILED_CREATE_BLOG)
 
     res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       success: true,
-      message: 'Blog has been successfully created',
+      message: Messages.CREATED_BLOG,
     })
   } catch (err) {
     if (req?.file) {
@@ -79,12 +79,12 @@ export const updateBlog = async (req, res, next) => {
 
     const updateResult = await BlogModel.updateOne({ _id: id }, { $set: blogDataBody })
     if (updateResult.modifiedCount == 0)
-      throw createHttpError.InternalServerError('Update failed')
+      throw createHttpError.InternalServerError(Messages.FAILED_UPDATE_BLOG)
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,
-      message: 'Blog has been successfully updated',
+      message: Messages.UPDATED_BLOG,
     })
   } catch (err) {
     if (req?.file) {
@@ -102,12 +102,12 @@ export const removeBlog = async (req, res, next) => {
 
     const result = await BlogModel.deleteOne({ _id: id })
     if (result.deletedCount == 0)
-      throw createHttpError.InternalServerError('Delete failed')
+      throw createHttpError.InternalServerError(Messages.FAILED_DELETE_BLOG)
 
     res.status(StatusCodes.OK).json({
       statusCode: StatusCodes.OK,
       success: true,
-      message: 'The blog was successfully deleted',
+      message: Messages.DELETED_BLOG,
     })
   } catch (err) {
     next(err)
@@ -165,7 +165,7 @@ export const getBlogs = async (req, res, next) => {
     ])
 
     if (!blogs) {
-      throw createHttpError.InternalServerError('The list of blogs was not received')
+      throw createHttpError.InternalServerError(Messages.FAILED_GET_BLOGS)
     }
 
     res.status(StatusCodes.OK).json({
@@ -187,7 +187,7 @@ export const likeBlog = catchAsync(async (req, res, next) => {
     ? { $pull: { likes: req.user._id } }
     : { $push: { likes: req.user._id } }
   await BlogModel.updateOne({ _id: id }, updateQuery)
-  const message = likedBlog ? 'UNLIKE' : 'LIKE'
+  const message = likedBlog ? Messages.UNLIKE_BLOG : Messages.LIKE_BLOG
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
@@ -205,7 +205,9 @@ export const bookmarkBlog = catchAsync(async (req, res) => {
     ? { $pull: { bookmarks: req.user._id } }
     : { $push: { bookmarks: req.user._id } }
   await BlogModel.updateOne({ _id: id }, updateQuery)
-  const message = bookmarkedBlog ? 'REMOVE_FROM_BOOKMARK' : 'ADDED_TO_BOOKMARK'
+  const message = bookmarkedBlog
+    ? Messages.REMOVE_FROM_BOOKMARK
+    : Messages.ADDED_TO_BOOKMARK
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
@@ -243,11 +245,11 @@ export const addPostComment = catchAsync(async (req, res) => {
 
   if (reply) {
     const parentComment = await CommentModel.findOne({ reply })
-    if (!parentComment) throw createHttpError.NotFound('COMMENT_NOT_FOUND')
+    if (!parentComment) throw createHttpError.NotFound(Messages.COMMENT_NOT_FOUND)
     if (parentComment.openToComment) {
-      throw createHttpError.BadRequest('ANSWER_REGISTRATION_IS_NOT_ALLOWED')
+      throw createHttpError.BadRequest(Messages.ANSWER_REGISTRATION_IS_NOT_ALLOWED)
     }
-    const createdResult = await CommentModel.create({
+    await CommentModel.create({
       user,
       blog,
       type,
@@ -262,7 +264,7 @@ export const addPostComment = catchAsync(async (req, res) => {
       content,
     })
     if (!createdResult) {
-      throw createHttpError.InternalServerError(messages.FAILED_ADD_COMMENT)
+      throw createHttpError.InternalServerError(Messages.FAILED_ADD_COMMENT)
     }
   }
 
@@ -276,7 +278,7 @@ export const addPostComment = catchAsync(async (req, res) => {
 const findBlogById = async blogId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: blogId })
   const blog = await BlogModel.findById(id).populate('comments')
-  if (!blog) throw createHttpError.NotFound('Not found blog')
+  if (!blog) throw createHttpError.NotFound(Messages.NOT_FOUND_BLOG)
   return blog
 }
 
@@ -286,7 +288,7 @@ const findBlogBySlug = async blogSlug => {
     { path: 'category', select: ['_id', 'value', 'name'] },
     { path: 'author', select: ['first_name', 'last_name', 'email'] },
   ])
-  if (!blog) throw createHttpError.NotFound('Not found blog')
+  if (!blog) throw createHttpError.NotFound(Messages.NOT_FOUND_BLOG)
   delete blog.category.subcategories
   return blog
 }
@@ -294,6 +296,6 @@ const findBlogBySlug = async blogSlug => {
 const checkExistsCategory = async categoryId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: categoryId })
   const category = await CategoryModel.findById(id)
-  if (!category) throw createHttpError.NotFound('CATEGORY_NOT_EXISRS')
+  if (!category) throw createHttpError.NotFound(Messages.CATEGORY_NOT_EXISRS)
   return category
 }

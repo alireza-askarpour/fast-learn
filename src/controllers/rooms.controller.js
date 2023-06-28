@@ -2,6 +2,7 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import ConversationModel from '../models/conversation.models.js'
+import { Messages } from '../constants/messages.js'
 
 /**
  * Create room
@@ -16,13 +17,16 @@ export const createRoom = async (req, res, next) => {
     const image = req?.file?.path?.replace(/\\/g, '/')
     const room = { name, description, image }
 
-    const result = await ConversationModel.updateOne({ endpoint: namespace }, { $push: { rooms: room } })
-    if (!result) throw createHttpError.InternalServerError('FAILED_CREATE_ROOM')
+    const result = await ConversationModel.updateOne(
+      { endpoint: namespace },
+      { $push: { rooms: room } }
+    )
+    if (!result) throw createHttpError.InternalServerError(Messages.FAILED_CREATE_ROOM)
 
     res.status(StatusCodes.CREATED).json({
       success: true,
       status: StatusCodes.CREATED,
-      message: 'ROOM_CRAETED',
+      message: Messages.ROOM_CRAETED,
     })
   } catch (err) {
     next(err)
@@ -32,7 +36,8 @@ export const createRoom = async (req, res, next) => {
 export const getRooms = async (req, res, next) => {
   try {
     const conversation = await ConversationModel.find({}, { rooms: 1 })
-    if (!conversation) throw createHttpError.InternalServerError('FAILED_GET_CONVERSATION')
+    if (!conversation)
+      throw createHttpError.InternalServerError(Messages.FAILED_GET_CONVERSATION)
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -49,7 +54,7 @@ export const getRooms = async (req, res, next) => {
  */
 export const findRoomWithName = async name => {
   const conversation = await ConversationModel.findOne({ 'rooms.name': name })
-  if (conversation) throw createHttpError.BadRequest('ROOM_ALEADY_EXISTS')
+  if (conversation) throw createHttpError.BadRequest(Messages.ROOM_ALEADY_EXISTS)
 }
 
 /**
@@ -57,6 +62,6 @@ export const findRoomWithName = async name => {
  */
 export const findConversationWithEndpoint = async endpoint => {
   const conversation = await ConversationModel.findOne({ endpoint })
-  if (!conversation) throw createHttpError.NotFound('NOT_FOUND_NAMESPACE')
+  if (!conversation) throw createHttpError.NotFound(Messages.NOT_FOUND_NAMESPACE)
   return conversation
 }

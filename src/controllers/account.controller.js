@@ -3,7 +3,7 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import UserModel from '../models/user.models.js'
-import SkillModel, { SkillSchema } from '../models/skill.model.js'
+import SkillModel from '../models/skill.model.js'
 
 import { hashString } from '../utils/hash-string.utils.js'
 import {
@@ -20,6 +20,8 @@ import { loginSchema, signupSchema } from '../validations/user.validation.js'
 import { createSkillSchema, updateSkillSchema } from '../validations/skill.validation.js'
 import { ObjectIdValidator } from '../validations/public.validation.js'
 
+import { Messages } from '../constants/messages.js'
+
 /**
  * Login admin
  */
@@ -28,13 +30,15 @@ export const loginAdmin = async (req, res, next) => {
     const { email, password } = await loginSchema.validateAsync(req.body)
 
     const user = await UserModel.findOne({ email })
-    if (!user) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+    if (!user) throw createHttpError.BadRequest(Messages.INCORRECT_EMAIL_OR_PASSWORD)
 
     const checkAdmin = await UserModel.findOne({ role: 'admin' })
-    if (!checkAdmin) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+    if (!checkAdmin)
+      throw createHttpError.BadRequest(Messages.INCORRECT_EMAIL_OR_PASSWORD)
 
     const comparedPassword = bcrypt.compareSync(password, user.password)
-    if (!comparedPassword) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+    if (!comparedPassword)
+      throw createHttpError.BadRequest(Messages.INCORRECT_EMAIL_OR_PASSWORD)
 
     const accessToken = await signAccessToken(email)
     const refreshToken = await signRefreshToken(email)
@@ -58,10 +62,11 @@ export const login = async (req, res, next) => {
     const { email, password } = await loginSchema.validateAsync(req.body)
 
     const user = await UserModel.findOne({ email })
-    if (!user) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+    if (!user) throw createHttpError.BadRequest(Messages.INCORRECT_EMAIL_OR_PASSWORD)
 
     const comparedPassword = bcrypt.compareSync(password, user.password)
-    if (!comparedPassword) throw createHttpError.BadRequest('INCORRECT_EMAIL_PASSWORD')
+    if (!comparedPassword)
+      throw createHttpError.BadRequest(Messages.INCORRECT_EMAIL_OR_PASSWORD)
 
     const accessToken = await signAccessToken(email)
     const refreshToken = await signRefreshToken(email)
@@ -85,7 +90,7 @@ export const signup = async (req, res, next) => {
     const { email, password, fullname } = await signupSchema.validateAsync(req.body)
 
     const existsUser = await UserModel.findOne({ email })
-    if (existsUser) throw createHttpError.BadRequest('EMAIL_ALREADY_EXISTS')
+    if (existsUser) throw createHttpError.BadRequest(Messages.EMAIL_ALREADY_EXISTS)
 
     const hashedPassword = hashString(password)
     const accessToken = await signAccessToken(email)
@@ -96,7 +101,8 @@ export const signup = async (req, res, next) => {
       email,
       password: hashedPassword,
     })
-    if (!createdResult) throw createHttpError.InternalServerError('FAILED_CREATE_ACCOUNT')
+    if (!createdResult)
+      throw createHttpError.InternalServerError(Messages.FAILED_CREATE_ACCOUNT)
 
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
@@ -134,7 +140,7 @@ export const refreshToken = async (req, res, next) => {
  */
 export const getMe = async (req, res, next) => {
   try {
-    if (!req?.user) throw createHttpError.Unauthorized('User unauthorized')
+    if (!req?.user) throw createHttpError.Unauthorized(Messages.USER_UNAUTHORIZED)
 
     const userId = req.user._id
     const user = await UserModel.findById(userId, { password: 0, otp: 0 })
@@ -159,22 +165,23 @@ export const addToBasket = catchAsync(async (req, res) => {
 
   // Check the purchased course
   const userCourse = await UserModel.findOne({ _id: req.user._id, courses: courseId })
-  if (userCourse) throw createHttpError.BadRequest('COURSE_ALREADY_PURCHASED')
+  if (userCourse) throw createHttpError.BadRequest(Messages.COURSE_ALREADY_PURCHASED)
 
   // Check the exist course in basket
   const existCourse = await UserModel.findOne({ _id: req.user._id, basket: courseId })
-  if (existCourse) throw createHttpError.BadRequest('COURSE_ALREADY_EXIST')
+  if (existCourse) throw createHttpError.BadRequest(Messages.COURSE_ALREADY_EXIST)
 
   const addedToBasket = await UserModel.updateOne(
     { _id: req.user._id },
     { $push: { basket: courseId } }
   )
-  if (!addedToBasket) throw createHttpError.InternalServerError('FAILED_ADD_TO_BASKET')
+  if (!addedToBasket)
+    throw createHttpError.InternalServerError(Messages.FAILED_ADD_TO_BASKET)
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
     success: true,
-    message: 'COURSE_ADDED_TO_BASKET',
+    message: Messages.COURSE_ADDED_TO_BASKET,
   })
 })
 
@@ -188,18 +195,18 @@ export const removeFromBasket = catchAsync(async (req, res) => {
 
   // Check the purchased course
   const userCourse = await UserModel.findOne({ _id: req.user._id, courses: courseId })
-  if (userCourse) throw createHttpError.BadRequest('COURSE_ALREADY_PURCHASED')
+  if (userCourse) throw createHttpError.BadRequest(Messages.COURSE_ALREADY_PURCHASED)
 
   const course = await findCourseInBasket(req.user._id, courseId)
 
   // Check the exist course in basket
-  if (!course) throw createHttpError.NotFound('COURSE_NOT_FOUND_IN_BASKET')
+  if (!course) throw createHttpError.NotFound(Messages.COURSE_NOT_FOUND_IN_BASKET)
   await UserModel.updateOne({ _id: req.user._id }, { $pull: { basket: courseId } })
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
     success: true,
-    message: 'COURSE_REMOVED_FROM_BASKET',
+    message: Messages.COURSE_REMOVED_FROM_BASKET,
   })
 })
 
@@ -223,7 +230,7 @@ export const uploadAvatar = async (req, res, next) => {
     const user = await UserModel.findOne({ _id: userId })
 
     if (!req?.file) {
-      throw createHttpError.BadRequest('INVALID_Avatar')
+      throw createHttpError.BadRequest(Messages.INVALID_AVATAR)
     }
 
     // Delete old avatar
@@ -234,13 +241,13 @@ export const uploadAvatar = async (req, res, next) => {
     // Upload avatar
     const result = await UserModel.updateOne({ _id: user._id }, { $set: { avatar } })
     if (result.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('FAILED_UPLOAD_AVATAR')
+      throw createHttpError.InternalServerError(Messages.FAILED_UPLOAD_AVATAR)
     }
 
     res.status(StatusCodes.OK).json({
       statusCode: StatusCodes.OK,
       success: true,
-      message: 'UPLOADED_AVATAR',
+      message: Messages.UPLOADED_AVATAR,
     })
   } catch (err) {
     if (req?.file) {
@@ -267,13 +274,13 @@ export const removeAvatar = catchAsync(async (req, res) => {
     { $set: { avatar: null } }
   )
   if (RemovedAvatar.modifiedCount === 0) {
-    throw createHttpError.InternalServerError('FAILED_REMOVE_AVATAR')
+    throw createHttpError.InternalServerError(Messages.FAILED_REMOVE_AVATAR)
   }
 
   res.status(StatusCodes.OK).json({
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'REMOVED_AVATAR',
+    message: Messages.REMOVED_AVATAR,
   })
 })
 
@@ -286,7 +293,7 @@ export const uploadCover = async (req, res, next) => {
     const userId = req.user._id
     const user = await UserModel.findOne({ _id: userId })
     if (!req?.file) {
-      throw createHttpError.BadRequest('INVALID_COVER')
+      throw createHttpError.BadRequest(Messages.INVALID_COVER)
     }
 
     // Delete old cover
@@ -297,13 +304,13 @@ export const uploadCover = async (req, res, next) => {
     // Upload cover
     const result = await UserModel.updateOne({ _id: user._id }, { $set: { cover } })
     if (result.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('FAILED_UPLOAD_COVER')
+      throw createHttpError.InternalServerError(Messages.FAILED_UPLOAD_COVER)
     }
 
     res.status(StatusCodes.OK).json({
       statusCode: StatusCodes.OK,
       success: true,
-      message: 'UPLOADED_COVER',
+      message: Messages.UPLOADED_COVER,
     })
   } catch (err) {
     if (req?.file) {
@@ -330,13 +337,13 @@ export const removeCover = catchAsync(async (req, res) => {
     { $set: { cover: null } }
   )
   if (RemovedCover.modifiedCount === 0) {
-    throw createHttpError.InternalServerError('FAILED_REMOVE_COVER')
+    throw createHttpError.InternalServerError(Messages.FAILED_REMOVE_COVER)
   }
 
   res.status(StatusCodes.OK).json({
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'REMOVED_COVER',
+    message: Messages.REMOVED_COVER,
   })
 })
 
@@ -349,7 +356,7 @@ export const createSkill = catchAsync(async (req, res) => {
 
   const createdResult = await SkillModel.create({ name, value })
   if (!createdResult) {
-    throw createHttpError.InternalServerError('FAILED_CREATE_SKILL')
+    throw createHttpError.InternalServerError(Messages.FAILED_CREATE_SKILL)
   }
 
   const updateResult = await UserModel.updateOne(
@@ -357,13 +364,13 @@ export const createSkill = catchAsync(async (req, res) => {
     { $push: { skills: createdResult._id } }
   )
   if (updateResult.modifiedCount == 0) {
-    throw createHttpError.InternalServerError('FAILED_ADD_SKILL_IN_USER_ACCOUNT')
+    throw createHttpError.InternalServerError(Messages.FAILED_ADD_SKILL_IN_USER_ACCOUNT)
   }
 
   res.status(StatusCodes.CREATED).json({
     status: StatusCodes.CREATED,
     success: true,
-    message: 'CREATED_SKILL',
+    message: Messages.CREATED_SKILL,
   })
 })
 
@@ -376,16 +383,17 @@ export const updateSkill = catchAsync(async (req, res) => {
 
   // Check exist skill into user skills
   const existSkill = await UserModel.findOne({ _id: req.user._id, skills: id })
-  if (!existSkill) throw createHttpError.BadRequest('ENTERED_SKILL_IS_NOT_EXIST')
+  if (!existSkill) throw createHttpError.BadRequest(Messages.ENTERED_SKILL_IS_NOT_EXIST)
 
   // Update skill
   const updatedSkill = await SkillModel.findByIdAndUpdate(id, skillData)
-  if (!updatedSkill) throw createHttpError.InternalServerError('FAILED_UPDATE_SKILL')
+  if (!updatedSkill)
+    throw createHttpError.InternalServerError(Messages.FAILED_UPDATE_SKILL)
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
     success: true,
-    message: 'UPDATED_SKILL',
+    message: Messages.UPDATED_SKILL,
   })
 })
 
@@ -400,7 +408,7 @@ export const removeSkill = catchAsync(async (req, res) => {
   const existSkill = await UserModel.findOne({ _id: req.user._id, skills: id })
   console.log(existSkill)
   if (!existSkill) {
-    throw createHttpError.BadRequest('NOT_EXIST_SKILL')
+    throw createHttpError.BadRequest(Messages.NOT_EXIST_SKILL)
   }
 
   const updateResult = await UserModel.updateOne(
@@ -408,17 +416,19 @@ export const removeSkill = catchAsync(async (req, res) => {
     { $pull: { skills: id } }
   )
   if (updateResult.modifiedCount == 0) {
-    throw createHttpError.InternalServerError('FAILED_REMOVE_SKILL_IN_USER_ACCOUNT')
+    throw createHttpError.InternalServerError(
+      Messages.FAILED_REMOVE_SKILL_IN_USER_ACCOUNT
+    )
   }
 
   const removedResult = await SkillModel.findByIdAndDelete(id)
   if (!removedResult) {
-    throw createHttpError.InternalServerError('FAILED_REMOVE_SKILL')
+    throw createHttpError.InternalServerError(Messages.FAILED_REMOVE_SKILL)
   }
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
     success: true,
-    message: 'REMOVED_SKILL',
+    message: Messages.REMOVED_SKILL,
   })
 })

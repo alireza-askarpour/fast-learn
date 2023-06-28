@@ -14,6 +14,8 @@ import {
 } from '../validations/course.validation.js'
 import { ObjectIdValidator, SlugValidator } from '../validations/public.validation.js'
 
+import { Messages } from '../constants/messages.js'
+
 export const getCourses = async (req, res, next) => {
   const { search } = req.query
   try {
@@ -25,8 +27,7 @@ export const getCourses = async (req, res, next) => {
       ])
       .sort({ _id: -1 })
 
-    if (!courses)
-      throw createHttpError.InternalServerError('The list of courses was not received')
+    if (!courses) throw createHttpError.InternalServerError(Messages.FAILED_GET_COURSES)
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -64,12 +65,12 @@ export const createCourse = async (req, res, next) => {
 
     if (type === 'free' && (+price > 0 || +discount > 0)) {
       throw createHttpError.BadRequest(
-        'No price or discount can be registered for the free course'
+        Messages.NOT_PRICE_OR_DISCOUNT_CAT_BE_REGISTERED_FOR_FREE_COURSE
       )
     }
 
     const existSlug = await CourseModel.findOne({ slug })
-    if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
+    if (existSlug) throw createHttpError.BadRequest(Messages.SLUG_ALREADY_EXISTED)
 
     await checkExistsCategory(category)
 
@@ -83,12 +84,12 @@ export const createCourse = async (req, res, next) => {
 
     const newCourse = await CourseModel.create(course)
     if (!newCourse)
-      throw createHttpError.InternalServerError('The course was not registered')
+      throw createHttpError.InternalServerError(Messages.FAILED_CREATE_COURSE)
 
     res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       success: true,
-      message: 'Course created successfully',
+      message: Messages.CREATED_COURSE,
     })
   } catch (err) {
     if (req?.file) {
@@ -110,12 +111,12 @@ export const updateCourse = async (req, res, next) => {
 
     if (type === 'free' && (+price > 0 || +discount > 0)) {
       throw createHttpError.BadRequest(
-        'No price or discount can be registered for the free course'
+        Messages.NOT_PRICE_OR_DISCOUNT_CAT_BE_REGISTERED_FOR_FREE_COURSE
       )
     }
 
     const existSlug = await CourseModel.findOne({ slug })
-    if (existSlug) throw createHttpError.BadRequest('The slug entered already existed')
+    if (existSlug) throw createHttpError.BadRequest(Messages.SLUG_ALREADY_EXISTED)
 
     await checkExistsCategory(category)
 
@@ -130,12 +131,12 @@ export const updateCourse = async (req, res, next) => {
       { $set: courseDataBody }
     )
     if (updatedCourseResult.modifiedCount == 0)
-      throw createHttpError.InternalServerError('The course was not updated')
+      throw createHttpError.InternalServerError(Messages.FAILED_UPDATE_COURSE)
 
     res.status(StatusCodes.OK).json({
       success: true,
       status: StatusCodes.OK,
-      message: 'The course has been updated',
+      message: Messages.UPDATED_COURSE,
     })
   } catch (err) {
     if (req?.file) {
@@ -155,7 +156,7 @@ export const likeCourse = catchAsync(async (req, res) => {
     ? { $pull: { likes: req.user._id } }
     : { $push: { likes: req.user._id } }
   await CourseModel.updateOne({ _id: id }, likeQuery)
-  const message = likedCourse ? 'UNLIKE' : 'LIKE'
+  const message = likedCourse ? Messages.UNLIKE_BLOG : Messages.LIKE_BLOG
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
@@ -173,7 +174,9 @@ export const bookmarkCourse = catchAsync(async (req, res) => {
     ? { $pull: { bookmarks: req.user._id } }
     : { $push: { bookmarks: req.user._id } }
   await CourseModel.updateOne({ _id: id }, updateQuery)
-  const message = bookmarkedCourse ? 'REMOVE_FROM_BOOKMARK' : 'ADDED_TO_BOOKMARK'
+  const message = bookmarkedCourse
+    ? Messages.REMOVE_FROM_BOOKMARK
+    : Messages.ADDED_TO_BOOKMARK
 
   res.status(StatusCodes.OK).json({
     status: StatusCodes.OK,
@@ -188,7 +191,7 @@ const findCourseBySlug = async slug => {
     { path: 'category', select: ['_id', 'value', 'name'] },
     { path: 'teacher', select: ['first_name', 'last_name', 'email'] },
   ])
-  if (!course) throw createHttpError.NotFound('Not found course')
+  if (!course) throw createHttpError.NotFound(Messages.NOT_FOUND_COURSE)
   delete course.category.subcategories
   return course
 }
@@ -196,6 +199,6 @@ const findCourseBySlug = async slug => {
 const checkExistsCategory = async categoryId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: categoryId })
   const category = await CategoryModel.findById(id)
-  if (!category) throw createHttpError.NotFound('CATEGORY_NOT_EXISRS')
+  if (!category) throw createHttpError.NotFound(Messages.CATEGORY_NOT_EXISRS)
   return category
 }

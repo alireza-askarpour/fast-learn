@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 
 import RoleModel from '../models/role.models.js'
 import { createRoleSchema, updateRoleSchema } from '../validations/RBAC.validation.js'
+import { Messages } from '../constants/messages.js'
 
 /**
  * Get all roles
@@ -13,7 +14,7 @@ export const getRoles = async (req, res, next) => {
     const roles = await RoleModel.find()
 
     if (!roles) {
-      throw createHttpError.InternalServerError('Roles list not received')
+      throw createHttpError.InternalServerError(Messages.FAILED_GET_ROLES)
     }
 
     res.status(StatusCodes.OK).json({
@@ -32,18 +33,21 @@ export const getRoles = async (req, res, next) => {
 export const createRole = async (req, res, next) => {
   try {
     if (!req?.body?.permissions) req.body.permissions = []
-    const { title, description, permissions } = await createRoleSchema.validateAsync(req.body)
+    const { title, description, permissions } = await createRoleSchema.validateAsync(
+      req.body
+    )
 
     const role = await RoleModel.findOne({ title })
-    if (role) throw createHttpError.BadRequest('Role has already been existed')
+    if (role) throw createHttpError.BadRequest(Messages.ROLE_ALREADY_EXISTED)
 
     const roleResult = await RoleModel.create({ title, description, permissions })
-    if (!roleResult) throw createHttpError.InternalServerError('Role was not granted')
+    if (!roleResult)
+      throw createHttpError.InternalServerError(Messages.ROLE_WAS_NOT_GRANTED)
 
     res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       success: true,
-      message: 'Role was successfully established',
+      message: Messages.CREATED_ROLE,
     })
   } catch (err) {
     next(err)
@@ -64,13 +68,13 @@ export const updateRole = async (req, res, next) => {
     const updateRoleResult = await RoleModel.updateOne({ _id }, { $set: roleDataBody })
 
     if (!updateRoleResult.modifiedCount) {
-      throw createHttpError.InternalServerError('The role was not edited')
+      throw createHttpError.InternalServerError(Messages.FAILED_UPDATE_ROLE)
     }
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,
-      message: 'Role was successfully updated',
+      message: Messages.UPDATED_ROLE,
     })
   } catch (err) {
     next(err)
@@ -88,13 +92,13 @@ export const removeRole = async (req, res, next) => {
     const removeRoleResult = await RoleModel.deleteOne({ _id: role._id })
 
     if (!removeRoleResult.deletedCount) {
-      throw createHttpError.InternalServerError('Failed to delete role')
+      throw createHttpError.InternalServerError(Messages.FAILED_DELETE_ROLE)
     }
 
     res.status(StatusCodes.OK).json({
       statusCode: StatusCodes.OK,
       success: true,
-      message: 'The role was successfully deleted',
+      message: Messages.DELETED_ROLE,
     })
   } catch (err) {
     next(err)
@@ -107,6 +111,6 @@ export const removeRole = async (req, res, next) => {
 const findRoleWithIdOrTitle = async field => {
   const findQuery = mongoose.isValidObjectId(field) ? { _id: field } : { title: field }
   const role = await RoleModel.findOne(findQuery)
-  if (!role) throw createHttpError.NotFound('The desired role was not found')
+  if (!role) throw createHttpError.NotFound(Messages.DESIRED_ROLE_WAS_NOT_FOUND)
   return role
 }

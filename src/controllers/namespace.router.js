@@ -2,6 +2,7 @@ import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 
 import ConversationModel from '../models/conversation.models.js'
+import { Messages } from '../constants/messages.js'
 
 /**
  * Create namespace
@@ -12,12 +13,13 @@ export const createNamespace = async (req, res, next) => {
     await findNamespaceWithEndpoint(endpoint)
 
     const conversation = await ConversationModel.create({ title, endpoint })
-    if (!conversation) throw createHttpError.InternalServerError('FAILED_CREATE_CONVERSATION')
+    if (!conversation)
+      throw createHttpError.InternalServerError(Messages.FAILED_CREATE_CONVERSATION)
 
     res.status(StatusCodes.CREATED).json({
       success: true,
       status: StatusCodes.CREATED,
-      message: 'CREATED_CONVERSATION',
+      message: Messages.CREATED_CONVERSATION,
     })
   } catch (err) {
     next(err)
@@ -30,7 +32,7 @@ export const createNamespace = async (req, res, next) => {
 export const getNamespaces = async (req, res, next) => {
   try {
     const namespaces = await ConversationModel.find({}, { rooms: 0 })
-    if (!namespaces) createHttpError.InternalServerError('FAILED_GET_NAMESPACES')
+    if (!namespaces) createHttpError.InternalServerError(Messages.FAILED_GET_NAMESPACES)
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -47,5 +49,5 @@ export const getNamespaces = async (req, res, next) => {
  */
 const findNamespaceWithEndpoint = async endpoint => {
   const conversation = await ConversationModel.findOne({ endpoint })
-  if (conversation) throw createHttpError.BadRequest('ENDPOINT_ALREADY_EXISTS')
+  if (conversation) throw createHttpError.BadRequest(Messages.ENDPOINT_ALREADY_EXISTS)
 }

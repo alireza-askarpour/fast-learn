@@ -6,6 +6,7 @@ import CourseModel from '../models/course.models.js'
 import { findCourseById } from './public.controller.js'
 import { ObjectIdValidator } from '../validations/public.validation.js'
 import { ChapterSchema } from '../validations/chapter.validation.js'
+import { Messages } from '../constants/messages.js'
 
 export const createChapter = async (req, res, next) => {
   const { id, title, description } = req.body
@@ -21,12 +22,12 @@ export const createChapter = async (req, res, next) => {
       }
     )
     if (createChapterResult.modifiedCount == 0)
-      throw createHttpError.InternalServerError('The chapter was not added')
+      throw createHttpError.InternalServerError(Messages.FAILED_CREATE_CHAPTER)
 
     res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       success: true,
-      message: 'Chapter created successfully',
+      message: Messages.CREATED_CHAPTER,
     })
   } catch (err) {
     next(err)
@@ -39,7 +40,7 @@ export const getChapters = async (req, res, next) => {
     const { id } = await ObjectIdValidator.validateAsync({ id: courseId })
 
     const course = await CourseModel.findOne({ _id: id }, { chapters: 1, title: 1 })
-    if (!course) throw createHttpError.NotFound('No course found with this ID')
+    if (!course) throw createHttpError.NotFound(Messages.NOT_FOUND_CHAPTER_WITH_THIS_ID)
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -58,7 +59,7 @@ export const updateChapter = async (req, res, next) => {
     const chapterDataBody = ChapterSchema.validateAsync(req.body)
 
     const chapter = await CourseModel.findOne({ 'chapters._id': id }, { 'chapters.$': 1 })
-    if (!chapter) throw createHttpError.NotFound('No course found with this ID')
+    if (!chapter) throw createHttpError.NotFound(Messages.NOT_FOUND_COURSE_WITH_THIS_ID)
 
     const updateChapterResult = await CourseModel.updateOne(
       { 'chapters._id': chapterId },
@@ -66,13 +67,13 @@ export const updateChapter = async (req, res, next) => {
     )
 
     if (updateChapterResult.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('The chapter could not be updated.')
+      throw createHttpError.InternalServerError(Messages.FAILED_UPDATE_CHAPTER)
     }
 
     res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,
-      message: 'The update was successful.',
+      message: Messages.UPDATED_CHAPTER,
     })
   } catch (err) {
     next(err)
@@ -96,13 +97,13 @@ export const removeChapter = async (req, res, next) => {
     )
 
     if (removeChapterResult.modifiedCount == 0) {
-      throw createHttpError.InternalServerError('Season deletion was not done')
+      throw createHttpError.InternalServerError(Messages.FAILED_DELETE_CHAPTER)
     }
 
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       success: true,
-      message: 'Delete the chapter successfully',
+      message: Messages.DELETED_CHAPTER,
     })
   } catch (err) {
     next(err)
@@ -112,6 +113,7 @@ export const removeChapter = async (req, res, next) => {
 const getOneChapter = async chapterId => {
   const { id } = await ObjectIdValidator.validateAsync({ id: chapterId })
   const chapter = await CourseModel.findOne({ 'chapters._id': id }, { 'chapters.$': 1 })
-  if (!chapter) throw new createHttpError.NotFound('No chapter found with this ID.')
+  if (!chapter)
+    throw new createHttpError.NotFound(Messages.NOT_FOUND_CHAPTER_WITH_THIS_ID)
   return chapter
 }
