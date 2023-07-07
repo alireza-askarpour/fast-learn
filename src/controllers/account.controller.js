@@ -40,8 +40,8 @@ export const loginAdmin = async (req, res, next) => {
     if (!comparedPassword)
       throw createHttpError.BadRequest(Messages.INCORRECT_EMAIL_OR_PASSWORD)
 
-    const accessToken = await signAccessToken(email)
-    const refreshToken = await signRefreshToken(email)
+    const accessToken = await signAccessToken(email, user._id)
+    const refreshToken = await signRefreshToken(email, user._id)
 
     return res.status(StatusCodes.OK).json({
       success: true,
@@ -68,8 +68,8 @@ export const login = async (req, res, next) => {
     if (!comparedPassword)
       throw createHttpError.BadRequest(Messages.INCORRECT_EMAIL_OR_PASSWORD)
 
-    const accessToken = await signAccessToken(email)
-    const refreshToken = await signRefreshToken(email)
+    const accessToken = await signAccessToken(email, user._id)
+    const refreshToken = await signRefreshToken(email, user._id)
 
     return res.status(StatusCodes.OK).json({
       success: true,
@@ -93,8 +93,6 @@ export const signup = async (req, res, next) => {
     if (existsUser) throw createHttpError.BadRequest(Messages.EMAIL_ALREADY_EXISTS)
 
     const hashedPassword = hashString(password)
-    const accessToken = await signAccessToken(email)
-    const refreshToken = await signRefreshToken(email)
 
     const createdResult = await UserModel.create({
       fullname,
@@ -103,6 +101,9 @@ export const signup = async (req, res, next) => {
     })
     if (!createdResult)
       throw createHttpError.InternalServerError(Messages.FAILED_CREATE_ACCOUNT)
+
+    const accessToken = await signAccessToken(email, createdResult._id)
+    const refreshToken = await signRefreshToken(email, createdResult._id)
 
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
@@ -120,10 +121,10 @@ export const signup = async (req, res, next) => {
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body
   try {
-    const email = await verifyRefreshToken(refreshToken)
+    const { email, id } = await verifyRefreshToken(refreshToken)
 
-    const accessToken = await signAccessToken(email)
-    const newRefreshToken = await signRefreshToken(email)
+    const accessToken = await signAccessToken(email, id)
+    const newRefreshToken = await signRefreshToken(email, id)
 
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,

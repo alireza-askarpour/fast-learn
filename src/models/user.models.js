@@ -16,7 +16,6 @@ const UserSchema = new mongoose.Schema(
     courses: { type: [mongoose.Types.ObjectId], default: [] },
     basket: {
       type: [mongoose.Types.ObjectId],
-      unique: true,
       default: [],
       ref: 'product',
     },

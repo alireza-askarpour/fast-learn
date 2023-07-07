@@ -6,7 +6,9 @@ import swaggerUI from 'swagger-ui-express'
 
 import { appListener, appErrorHandler, port } from './config/app.config.js'
 import connectDB from './config/database.config.js'
+import { initRedis } from './config/init-redis.config.js'
 import { swaggerSetup } from './config/swagger.config.js'
+
 import { morganMiddleware } from './middlewares/morgan.middleware.js'
 
 import allRoutes from './routes/index.routes.js'
@@ -14,6 +16,7 @@ import allRoutes from './routes/index.routes.js'
 // Config
 dotenv.config()
 connectDB()
+initRedis()
 
 const app = express()
 
